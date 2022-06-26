@@ -1,18 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { Providers } from "contexts";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Providers>
+      <App />
+    </Providers>
   </React.StrictMode>
 );
 
-// const user = {
+// const hand = {
 //   "foo": {
-//     name: "foo",
-//     hand: [1, 32, 5],
+//     cards: [1, 32, 5],
 //     gameId: 001
 //   }
 // }
@@ -20,9 +22,7 @@ root.render(
 // const games = {
 //   001: {
 //     host: "foo",
-//     hostName: "richard",
 //     oppo: "bar",
-//     oppoName: "maddie",
 //     trick: [],
 //     trumps: "",
 //     lastCard: 33, 
@@ -74,6 +74,7 @@ root.render(
 // createGame()
 //   // creates game record with game.host as the user.id
 //   // sets the game.hostName as the user.name
+//   // creates
 
 // joinGame(gameId)
 //   // happens when you join the correct url
