@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
 import { Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import Game from "./Game";
+import Home from "components/Home";
+import Game from "components/Game";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

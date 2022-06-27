@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
 import { firestore } from "utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import QrCode from "./QrCode";
 
 function GamePage() {
   let { id } = useParams();
@@ -25,7 +26,7 @@ function GamePage() {
       {game && (
         <div>
           <p>game state: {game.gameState}</p>
-          {game.gameState === "lobby" ? <p>qr code</p> : null}
+          {game.gameState === "lobby" ? <QrCode id={id} /> : null}
           {game.gameState === "scoreboard" ? <p>scoreboard</p> : null}
           {game.gameState === "play" ? (
             <p>{game.playersTurn === data.uid ? "your" : "their"} turn</p>
