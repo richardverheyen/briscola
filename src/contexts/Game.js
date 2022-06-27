@@ -2,18 +2,23 @@ import { useContext, useState, createContext, useEffect } from "react";
 import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { Auth } from 'contexts';
 
 export const Game = createContext({
   id: undefined,
   game: undefined,
-  setId: () => {}
+  setId: () => {},
+  isHost: undefined,
 });
 
 function GameHooks() {
+  const {data: auth} = useContext(Auth);
   let navigate = useNavigate();
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
+
+  const isHost = () => auth && game && auth.uid === game.host;
 
   useEffect(() => {
     if (id) {
@@ -41,7 +46,8 @@ function GameHooks() {
   return {
     id,
     setId,
-    game
+    game,
+    isHost
   };
 }
 

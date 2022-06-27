@@ -5,12 +5,12 @@ import { useParams } from "react-router-dom";
 import QrCode from "./QrCode";
 
 function GamePage() {
-  let { id } = useParams();
+  let { data: auth } = useContext(Auth);
   let { game, setId } = useContext(Game);
-  let { data } = useContext(Auth);
+  let { id } = useParams();
 
   useEffect(() => {
-    setId(id);
+    setId(id); // sets the Game context with the id from the URL (for both host and oppo)
   }, []);
 
   return (
@@ -21,10 +21,11 @@ function GamePage() {
       {game && (
         <div>
           <p>game state: {game.gameState}</p>
+          <p>is host: {game.isHost ? "true" : "false"}</p>
           {game.gameState === "lobby" ? <QrCode id={id} /> : null}
           {game.gameState === "scoreboard" ? <p>scoreboard</p> : null}
           {game.gameState === "play" ? (
-            <p>{game.playersTurn === data.uid ? "your" : "their"} turn</p>
+            <p>{game.playersTurn === auth.uid ? "your" : "their"} turn</p>
           ) : null}
         </div>
       )}
