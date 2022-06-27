@@ -9,37 +9,40 @@ export const Game = createContext({
   game: undefined,
   setId: () => {},
   isHost: undefined,
+  quitGame: () => {}
 });
 
 function GameHooks() {
   const {data: auth} = useContext(Auth);
   let navigate = useNavigate();
+  const [isHost, setIsHost] = useState(false);
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
 
-  const isHost = () => auth && game && auth.uid === game.host;
+  // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
+  const quitGame = () => setGameSnapshot(undefined);
 
   useEffect(() => {
     if (id) {
-      console.log('setting the game id as:', {id});
       const unsubscribe = onSnapshot(
         doc(firestore, "games", id),
         (snapshot) => setGameSnapshot(snapshot)
       );
       return unsubscribe;
-    } else {
-      setGameSnapshot(undefined); // i'm not sure if this is right
     }
   }, [id]);
 
   useEffect(() => {
     if (gameSnapshot) {
-      console.log('game snapshot set');
-      setGame(gameSnapshot.data());
-    } else {
-      setGame(undefined);  // i'm not sure if this is right
-      navigate('/');  // i'm not sure if this is right
+      const gameData = gameSnapshot.data();
+      setGame(gameData);
+      setIsHost(auth.uid === gameData.host);
+
+    } else if (!gameSnapshot && id) {
+      setGame(undefined);
+      setIsHost(undefined);
+      navigate('/'); 
     }
   }, [gameSnapshot]);
 
@@ -47,7 +50,8 @@ function GameHooks() {
     id,
     setId,
     game,
-    isHost
+    isHost,
+    quitGame
   };
 }
 

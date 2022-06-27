@@ -6,22 +6,28 @@ import QrCode from "./QrCode";
 
 function GamePage() {
   let { data: auth } = useContext(Auth);
-  let { game, setId } = useContext(Game);
+  let { game, quitGame, setId, isHost } = useContext(Game);
   let { id } = useParams();
 
   useEffect(() => {
     setId(id); // sets the Game context with the id from the URL (for both host and oppo)
   }, []);
 
+  useEffect(() => {
+    if (game && !isHost) {
+      console.log('join the game');
+    }
+  }, [game, isHost]);
+
   return (
     <div className="Game">
       <p>game page</p>
-      <Button onClick={() => setId(undefined)}>Quit</Button>
+      <Button onClick={quitGame}>Quit</Button>
 
       {game && (
         <div>
           <p>game state: {game.gameState}</p>
-          <p>is host: {game.isHost ? "true" : "false"}</p>
+          <p>is host: {isHost ? "true" : "false"}</p>
           {game.gameState === "lobby" ? <QrCode id={id} /> : null}
           {game.gameState === "scoreboard" ? <p>scoreboard</p> : null}
           {game.gameState === "play" ? (
