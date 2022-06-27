@@ -1,13 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
+import { Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import Game from "./Game";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Providers>
-      <App />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/game/:id" element={<Game />} />
+      </Routes>
     </Providers>
   </React.StrictMode>
 );
@@ -25,9 +30,9 @@ root.render(
 //     oppo: "bar",
 //     trick: [],
 //     trumps: "",
-//     lastCard: 33, 
+//     lastCard: 33,
 //     gameState: "", // lobby, play, draw, scoreboard
-//     hostPlayersTurn: false,
+//     playersTurn: <id>,
 //     deckHeight: 36,
 
 //     // according to this, we can do private subcollections on a record
@@ -48,14 +53,14 @@ root.render(
 //   // check that the game.gameState is 'play'
 //   // check it is that users turn
 //   // check user has that card in game.private.hostHand
-//   // 
+//   //
 //   // takes cardId from game.private.hostHand and puts it in game.trick
 //   // removes cardId from user.hostHand
 //   // if game.trick.length == 2
 //   // set the game.gameState to 'draw'
 //   // if user won the hand, put those cards in game.private.hostWon
 //   // if user won the hand, is is their turn
-//   // 
+//   //
 
 // drawFromDeck()
 //   // check user isn't in another game
@@ -63,11 +68,11 @@ root.render(
 //   // check that the game.gameState is 'draw'
 //   // check the deck.length > 0
 //   // check it is that users turn
-//   // 
+//   //
 //   // takes cardId from top of private.deck and puts it in game.private.hostHand
 //   // sets user.hand as game.private.hostHand
 //   // updates game.deckHeight from game.private.deck
-//   // 
+//   //
 //   // then if game.private.hostHand.length and game.private.oppoHand.length are both 3, set game.gameState to "play"
 //   // finally toggle game.hostPlayersTurn
 
@@ -79,7 +84,7 @@ root.render(
 // joinGame(gameId)
 //   // happens when you join the correct url
 //   // checks there isn't already a game.oppo set
-//   // 
+//   //
 //   // sets the game.oppo to the userId
 //   // sets the game.oppoName to the user.name
 //   // runs deal()
@@ -90,4 +95,3 @@ root.render(
 //   // sets game.lastCard as the first card in the game.private.deck array
 //   // moves the first card in the game.private.deck array to the last place in that array
 //   // sets the game.gameState to 'play'
-

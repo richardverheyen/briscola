@@ -1,13 +1,16 @@
 import { useContext } from "react";
 import { Auth } from "contexts";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
-function App() {
+function Home() {
   let { signIn, signOut, data } = useContext(Auth);
+  let navigate = useNavigate();
 
   const createGame = () => {
     fetch(
-      'http://localhost:5001/briscola-fp/us-central1/createGame',
+      // 'http://localhost:5001/briscola-fp/us-central1/createGame',
+      'https://us-central1-briscola-fp.cloudfunctions.net/createGame',
       {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -20,6 +23,7 @@ function App() {
       .then(res => res.json()) // must match match "Content-Type" header
       .then(data => {
         console.log('Created Game', data.id);
+        navigate(`game/${data.id}`);
       })
       .catch((err) => {
         console.error('Create Game Failed', {err});
@@ -27,7 +31,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="Home">
       {data ? (
         <Button onClick={signOut} variant="outlined">
           Log Out
@@ -38,11 +42,11 @@ function App() {
         </Button>
       )}
 
-      <Button onClick={createGame} variant="contained">
+      <Button disabled={!data} onClick={createGame} variant="contained">
         Create Game
       </Button>
     </div>
   );
 }
 
-export default App;
+export default Home;
