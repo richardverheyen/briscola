@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
 import { Routes, Route } from "react-router-dom";
+
+import Login from "components/Login";
 import Home from "components/Home";
 import Game from "components/Game";
 
@@ -9,6 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Providers>
+      <Login />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/game/:id" element={<Game />} />

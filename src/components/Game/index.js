@@ -2,8 +2,6 @@ import { useEffect, useContext } from "react";
 import { Game, Auth } from "contexts";
 import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
-import { firestore } from "utils/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import QrCode from "./QrCode";
 
 function GamePage() {
@@ -12,11 +10,8 @@ function GamePage() {
   let { data } = useContext(Auth);
 
   useEffect(() => {
-    console.log("useEffect:", { id });
     setId(id);
   }, []);
-
-  const createGame = () => {};
 
   return (
     <div className="Game">
