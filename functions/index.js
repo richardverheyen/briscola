@@ -4,24 +4,29 @@ const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 
-// exports.createUserRecord = functions.auth.user().onCreate((user) => {
-//     admin.firestore().collection('users').doc(user.uid).set({
-//         // email: user.email,
-//         // gameId: ,
-//         // name: 
-//         hand: [1, 2, 3]
-//     })
+// exports.createGame = functions.https.onRequest(async function(req, res) {
+//     return cors(req, res, async () => {
+        
+//         const {id} = await admin.firestore().collection('games').add({
+//             // host: 
+//             gameState: "lobby",
+//         });
+
+//         res.send({id});
+//     });
 // });
 
-exports.createGame = functions.https.onRequest(async function(req, res) {
-    return cors(req, res, async () => {
-        const {id} = await admin.firestore().collection('games').add({
-            // host: 
-            gameState: "lobby",
-        });
-
-        res.send({id});
+// https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
+// https://firebase.google.com/docs/functions/callable
+exports.createGame = functions.region('australia-southeast1').https.onCall(async (data, context) => {
+    const { id } = await admin.firestore().collection('games').add({
+        host: context.auth.uid,
+        gameState: "lobby",
     });
+
+    return {
+        id
+    };
 });
 
 exports.playCard = functions.https.onRequest(async function(req, res) {
@@ -31,3 +36,11 @@ exports.playCard = functions.https.onRequest(async function(req, res) {
         //  res.send(url);
     });
 });
+
+exports.myStorageFunction = functions
+    .region('europe-west1')
+    .storage
+    .object()
+    .onFinalize((object) => {
+      // ...
+    });

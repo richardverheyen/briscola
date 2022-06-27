@@ -1,18 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
-import { Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import Game from "./Game";
+
+import Router from "router";
+import Login from "components/Login";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Providers>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/game/:id" element={<Game />} />
-      </Routes>
+      <Login />
+      <Router />
     </Providers>
   </React.StrictMode>
 );

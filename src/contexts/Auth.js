@@ -14,14 +14,8 @@ export const Auth = createContext({
 function AuthHooks() {
   const [data, loading, error] = useAuthState(auth);
 
-  const signIn = async () => {
-    const success = (data) => {
-      console.log('sign in success');
-    };
-    const failure = (error) => console.log({ error });
+  const signIn = () => {
     signInAnonymously(auth)
-      .then(success)
-      .catch(failure)
   };
 
   const signOut = () => {

@@ -2,33 +2,36 @@ import { useEffect, useContext } from "react";
 import { Game, Auth } from "contexts";
 import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
-import { firestore } from "utils/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import QrCode from "./QrCode";
 
 function GamePage() {
+  let { data: auth } = useContext(Auth);
+  let { game, quitGame, setId, isHost } = useContext(Game);
   let { id } = useParams();
-  let { game, setId } = useContext(Game);
-  let { data } = useContext(Auth);
 
   useEffect(() => {
-    console.log("useEffect:", { id });
-    setId(id);
+    setId(id); // sets the Game context with the id from the URL (for both host and oppo)
   }, []);
 
-  const createGame = () => {};
+  useEffect(() => {
+    if (game && !isHost) {
+      console.log('join the game');
+    }
+  }, [game, isHost]);
 
   return (
     <div className="Game">
       <p>game page</p>
-      <Button onClick={() => setId(undefined)}>Quit</Button>
+      <Button onClick={quitGame}>Quit</Button>
 
       {game && (
         <div>
           <p>game state: {game.gameState}</p>
-          {game.gameState === "lobby" ? <p>qr code</p> : null}
+          <p>is host: {isHost ? "true" : "false"}</p>
+          {game.gameState === "lobby" ? <QrCode id={id} /> : null}
           {game.gameState === "scoreboard" ? <p>scoreboard</p> : null}
           {game.gameState === "play" ? (
-            <p>{game.playersTurn === data.uid ? "your" : "their"} turn</p>
+            <p>{game.playersTurn === auth.uid ? "your" : "their"} turn</p>
           ) : null}
         </div>
       )}
