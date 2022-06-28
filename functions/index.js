@@ -1,7 +1,5 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const { OneK } = require("@mui/icons-material");
-const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 
@@ -61,13 +59,12 @@ exports.joinGame = functions
 exports.playCard = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
-  
-  // takes cardId from game.private.hostHand and puts it in game.trick
-  // removes cardId from user.hostHand
-  // if game.trick.length == 2
-  // set the game.gameState to 'draw'
-  // if user won the hand, put those cards in game.private.hostWon
-  // if user won the hand, is is their turn
+    // takes cardId from game.private.hostHand and puts it in game.trick
+    // removes cardId from user.hostHand
+    // if game.trick.length == 2
+    // set the game.gameState to 'draw'
+    // if user won the hand, put those cards in game.private.hostWon
+    // if user won the hand, is is their turn
     const { gameId, card } = data;
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
@@ -75,7 +72,11 @@ exports.playCard = functions
     let game = gameSnapshot.data();
 
     const playerIsInThisGame = (game, context) => {
-      if (!Boolean(context.auth.uid === game.host || context.auth.uid === game.oppo)) {
+      if (
+        !Boolean(
+          context.auth.uid === game.host || context.auth.uid === game.oppo
+        )
+      ) {
         throw "You aren't in this game";
       }
     };
@@ -84,13 +85,13 @@ exports.playCard = functions
       if (game.gameState !== "play") {
         throw "The game.gameState is not 'play'";
       }
-    }
+    };
 
     const itIsThisPlayersTurn = (game, context) => {
       if (game.currentPlayersTurn !== context.auth.uid) {
         throw "It is not your turn";
       }
-    }
+    };
 
     // const thePlayerHasThisCard = (game, context) => {
     //   if (game.currentPlayersTurn === context.auth.uid) {
@@ -101,7 +102,7 @@ exports.playCard = functions
     // }
 
     function playCard(card) {
-      console.log('playCard', card);
+      console.log("playCard", card);
     }
 
     try {
@@ -110,9 +111,8 @@ exports.playCard = functions
       itIsThisPlayersTurn(game, context);
       // thePlayerHasThisCard();
       playCard(card);
-
     } catch (error) {
-      throw new Error(error) ;
+      throw new Error(error);
     }
 
     // gameRef
@@ -124,7 +124,6 @@ exports.playCard = functions
     //     startGame(data.id);
     //   });
   });
-
 
 async function startGame(id) {
   let gameRef = admin.firestore().collection("games").doc(id);
@@ -189,6 +188,14 @@ async function startGame(id) {
     trumps,
   });
 
-  await admin.firestore().collection("hands").doc(game.host).update({cards: hostHand, gameId: id});
-  await admin.firestore().collection("hands").doc(game.oppo).update({cards: oppoHand, gameId: id});
+  await admin
+    .firestore()
+    .collection("hands")
+    .doc(game.host)
+    .update({ cards: hostHand, gameId: id });
+  await admin
+    .firestore()
+    .collection("hands")
+    .doc(game.oppo)
+    .update({ cards: oppoHand, gameId: id });
 }
