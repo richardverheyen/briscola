@@ -2,28 +2,28 @@ import { useState, createContext } from 'react';
 
 import {  signInAnonymously } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from 'utils/firebase';
+import { firebaseAuth } from 'utils/firebase';
 
 export const Auth = createContext({
-  data: {},
+  auth: {},
   loading: true,
   signIn: () => {},
   signOut: () => {},
 });
 
 function AuthHooks() {
-  const [data, loading, error] = useAuthState(auth);
+  const [auth, loading, error] = useAuthState(firebaseAuth);
 
   const signIn = () => {
-    signInAnonymously(auth)
+    signInAnonymously(firebaseAuth)
   };
 
   const signOut = () => {
-    auth.signOut();
+    firebaseAuth.signOut();
   };
 
   return {
-    data,
+    auth,
     loading,
     signIn,
     signOut

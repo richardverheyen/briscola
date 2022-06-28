@@ -16,7 +16,7 @@ export const Game = createContext({
 });
 
 function GameHooks() {
-  const { data: auth } = useContext(Auth);
+  const { auth } = useContext(Auth);
   let navigate = useNavigate();
   const [isPlayer, setIsPlayer] = useState(false);
   const [id, setId] = useState(undefined);

@@ -4,7 +4,7 @@ import { Game, Auth } from "contexts";
 import QrCode from "./QrCode";
 
 function Player({game }) {
-//   let { data: auth } = useContext(Auth);
+//   let { auth } = useContext(Auth);
 //   let { game, quitGame, setId, isHost } = useContext(Game);
 
   return (

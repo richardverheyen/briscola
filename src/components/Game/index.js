@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 
-import { Game, Auth } from "contexts";
+import { Game } from "contexts";
 import QrCode from "./QrCode";
 import Player from "./Player";
 
