@@ -50,7 +50,7 @@ exports.joinGame = functions
     gameRef
       .update({
         oppo: context.auth.uid,
-        currentPlayersTurn: context.auth.uid
+        currentPlayersTurn: context.auth.uid,
       })
       .then(() => {
         startGame(data.id);
@@ -65,66 +65,72 @@ exports.playCard = functions.https.onRequest(async function (req, res) {
 });
 
 async function startGame(id) {
-    console.log('start the game!', id);
-    let gameRef = admin.firestore().collection("games").doc(id);
+  let gameRef = admin.firestore().collection("games").doc(id);
+  const gameSnapshot = await gameRef.get();
+  let game = gameSnapshot.data();
+  if (game.gameState !== "lobby") {
+    return;
+  }
 
-    const game = await gameRef.get();
-    if (game.data().gameState !== "lobby") {
-        return;
+  let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
+  let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
+  let hostHand = [];
+  let oppoHand = [];
+  let lastCard;
+  let trumps;
+
+  hostHand.push(deck.shift());
+  oppoHand.push(deck.shift());
+  hostHand.push(deck.shift());
+  oppoHand.push(deck.shift());
+  hostHand.push(deck.shift());
+  oppoHand.push(deck.shift());
+  assignTrumps();
+
+  function assignTrumps() {
+    let topCard = deck[0];
+    lastCard = topCard;
+    trumps = cardNumberToSuit(topCard);
+
+    deck.push(deck.shift()); // move the first deck card to the end of the deck array
+  }
+
+  function cardNumberToSuit(num) {
+    const suitId = Math.floor(num / 10);
+    switch (suitId) {
+      case 0:
+        return "coins";
+
+      case 1:
+        return "cups";
+
+      case 2:
+        return "bats";
+
+      case 3:
+        return "swords";
     }
+  }
 
-    let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
-    let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
-    let hostHand = [];
-    let oppoHand = [];
-    let lastCard;
-    let trumps;
+  let privateRef = gameRef.collection("private").add({
+    originalDeck,
+    deck,
+    hostHand,
+    oppoHand,
+  });
 
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    assignTrumps();
+  gameRef.update({
+    gameState: "play",
+    lastCard,
+    trumps,
+  });
 
-    function assignTrumps() {
-      let topCard = deck[0];
-      lastCard = topCard;
-      trumps = cardNumberToSuit(topCard);
+  updateHand(game.host, {cards: hostHand, gameId: id});
+  updateHand(game.oppo, {cards: oppoHand, gameId: id});
+}
 
-      // deck.push(deck.splice(0, 1)[0]); // move the first deck card to the end of the deck array
-      deck.push(deck.shift()); // move the first deck card to the end of the deck array
-    }
-
-    function cardNumberToSuit(num) {
-      const suitId = Math.floor(num / 10);
-      switch (suitId) {
-        case 0:
-          return "coins";
-
-        case 1:
-          return "cups";
-
-        case 2:
-          return "bats";
-
-        case 3:
-          return "swords";
-      }
-    }
-
-    let privateRef = gameRef.collection("private").add({
-      originalDeck,
-      deck,
-      hostHand,
-      oppoHand,
-    });
-
-    gameRef
-      .update({
-        gameState: "play",
-        lastCard,
-        trumps,
-      })
+function updateHand(playerId, obj) {
+  console.log(playerId, obj);
+  const handRef = admin.firestore().collection("hands").doc(playerId);
+  handRef.update(obj);
 }
