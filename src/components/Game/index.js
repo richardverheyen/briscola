@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 
 import { Game } from "contexts";
 import QrCode from "./QrCode";
-import Player from "./Player";
+import Gui from "./Gui";
 
 function GamePage() {
   let { game, quitGame, setId } = useContext(Game);
@@ -24,7 +24,7 @@ function GamePage() {
         return <p>scoreboard</p>;
 
       default:
-        return <Player game={game} />;
+        return <Gui />;
     }
   };
 

@@ -28,7 +28,7 @@ function Home() {
   }
 
   return (
-    <div className="Home">
+    <main className="Home">
       <LoadingButton
         disabled={!auth}
         loading={isLoading}
@@ -37,7 +37,7 @@ function Home() {
       >
         Create Game
       </LoadingButton>
-    </div>
+    </main>
   );
 }
 

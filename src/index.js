@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
+import './style.scss';
 
 import Router from "router";
 import Login from "components/Login";

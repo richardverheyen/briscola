@@ -13,15 +13,14 @@ function HandHooks() {
   const { game } = useContext(Game);
 
   const [hand, setHand] = useState({
-    cards: [],
+    cards: []
   });
   const [handSnapshot, setHandSnapshot] = useState(undefined);
 
   useEffect(() => {
     if (game) {
-      const unsubscribe = onSnapshot(
-        doc(firestore, "hands", auth.uid),
-        (snapshot) => setHandSnapshot(snapshot)
+      const unsubscribe = onSnapshot(doc(firestore, "hands", auth.uid), (snapshot) =>
+        setHandSnapshot(snapshot)
       );
       return unsubscribe;
     }
