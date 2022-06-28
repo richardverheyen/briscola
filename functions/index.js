@@ -122,6 +122,8 @@ async function startGame(id) {
   gameRef.update({
     gameState: "play",
     lastCard,
+    deckHeight: deck.length,
+    trick: [],
     trumps,
   });
 

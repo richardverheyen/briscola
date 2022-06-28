@@ -16,8 +16,9 @@ function Player({ game }) {
         ))}
       </div>
 
-      <p className="briscola">Brisc is: Coins</p>
-      <p className="deck-height">Deck is 22 high</p>
+      <p className="briscola">Brisc is: {game.trumps}</p>
+      <p className="last-card">The last card is : {game.lastCard}</p>
+      <p className="deck-height">Deck is {game.deckHeight} high</p>
 
       <ul>
         <li>It's your turn to play a card</li>
