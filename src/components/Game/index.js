@@ -1,7 +1,5 @@
 import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "utils/firebase";
 import Button from "@mui/material/Button";
 
 import { Game, Auth } from "contexts";
@@ -12,27 +10,10 @@ function GamePage() {
   let { game, quitGame, setId, isHost } = useContext(Game);
   let { id } = useParams();
 
-  const joinGame = httpsCallable(functions, 'joinGame');
-
+  // sets the Game context with the id from the URL (for both host and oppo)
   useEffect(() => {
-    setId(id); // sets the Game context with the id from the URL (for both host and oppo)
+    setId(id);
   }, []);
-
-  useEffect(() => {
-    if (game && !isHost) {
-      console.log('joining the game');
-
-      joinGame({id}).then((res) => {
-        console.log('successfully joined game!', {res})
-      })
-      .catch((err) => {
-        console.error("Join Game Failed", { err });
-      })
-      .finally(() => {
-        // setIsLoading(true);
-      });
-    }
-  }, [game, isHost]);
 
   return (
     <div className="Game">

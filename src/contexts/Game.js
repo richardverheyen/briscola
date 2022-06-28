@@ -4,6 +4,9 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { Auth } from 'contexts';
 
+import { httpsCallable } from "firebase/functions";
+import { functions } from "utils/firebase";
+
 export const Game = createContext({
   id: undefined,
   game: undefined,
@@ -19,6 +22,8 @@ function GameHooks() {
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
+
+  const joinGame = httpsCallable(functions, 'joinGame');
 
   // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
   const quitGame = () => setGameSnapshot(undefined);
@@ -36,8 +41,12 @@ function GameHooks() {
   useEffect(() => {
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
+
+      if (!game) {
+        initPlayer(gameData);
+      }
+
       setGame(gameData);
-      setIsHost(auth.uid === gameData.host);
 
     } else if (!gameSnapshot && id) {
       setGame(undefined);
@@ -45,6 +54,14 @@ function GameHooks() {
       navigate('/'); 
     }
   }, [gameSnapshot]);
+
+  function initPlayer(gameData) {
+    if (auth.uid === gameData.host) {
+      setIsHost(true);
+    } else {
+      joinGame({id});
+    }
+  }
 
   return {
     id,

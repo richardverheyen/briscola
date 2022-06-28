@@ -61,10 +61,16 @@ exports.playCard = functions.https.onRequest(async function (req, res) {
   });
 });
 
-function startGame(id) {
+async function startGame(id) {
     console.log('start the game!', id);
-
     let gameRef = admin.firestore().collection("games").doc(id);
+
+    const game = await gameRef.get();
+
+    if (game.data().gameState !== "lobby") {
+        return;
+    }
+
     let privateRef = gameRef.collection("private").add({
         deck: [1, 2, 3]
     });
