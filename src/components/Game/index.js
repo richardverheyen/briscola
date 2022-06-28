@@ -52,6 +52,9 @@ function GamePage() {
                 isHost ? <p>you are the host, your opponent is {game.oppo}</p> : <p>you are the opposition, your host is {game.host}</p>
               }
               <p>it is {game.playersTurn === auth.uid ? "your" : "their"} turn</p>
+              <div className="hand">
+                Your hand: 1, 2, 3
+              </div>
             </>
           ) : null}
         </div>

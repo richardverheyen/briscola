@@ -65,6 +65,10 @@ function startGame(id) {
     console.log('start the game!', id);
 
     let gameRef = admin.firestore().collection("games").doc(id);
+    let privateRef = gameRef.collection("private").add({
+        deck: [1, 2, 3]
+    });
+
     gameRef
       .update({
         gameState: "play",
