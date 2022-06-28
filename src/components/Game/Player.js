@@ -1,19 +1,20 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 
-import { Game, Auth } from "contexts";
-import QrCode from "./QrCode";
+import { Hand } from "contexts";
 
-function Player({game }) {
-//   let { auth } = useContext(Auth);
-//   let { game, quitGame, setId, isHost } = useContext(Game);
+function Player({ game }) {
+  let { cards } = useContext(Hand);
 
   return (
     <div className="Player">
-        <p>You're player</p>
-        
-        <div className="hand">
-            Your hand: 1, 2, 3
-        </div>
+      <p>You're player</p>
+
+      <div className="hand">
+        Your hand:{" "}
+        {cards?.map((card, index) => (
+          <span key={index}>{card},&nbsp;</span>
+        ))}
+      </div>
     </div>
   );
 }
