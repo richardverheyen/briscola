@@ -7,7 +7,7 @@ import QrCode from "./QrCode";
 import Player from "./Player";
 
 function GamePage() {
-  let { game, quitGame, setId, isPlayer } = useContext(Game);
+  let { game, quitGame, setId } = useContext(Game);
   let { id } = useParams();
 
   // sets the Game context with the id from the URL (for both host and oppo)
