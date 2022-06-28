@@ -44,6 +44,9 @@ exports.joinGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
     let gameRef = admin.firestore().collection("games").doc(data.id);
+
+    // if oppo is truthy, fail this request because the game is already full
+
     gameRef
       .update({
         oppo: context.auth.uid,

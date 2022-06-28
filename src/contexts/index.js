@@ -1,5 +1,5 @@
-import { Auth, AuthProvider } from "./Auth";
-import { Game, GameProvider } from "./Game";
+import { Auth, AuthProvider } from "./AuthContext";
+import { Game, GameProvider } from "./GameContext";
 import { BrowserRouter } from "react-router-dom";
 
 function Providers({ children }) {
