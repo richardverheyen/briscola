@@ -9,7 +9,6 @@ function HandView({ cards, selectCard }) {
   function spritePosition(num) {
     const suitId = Math.floor(num / 10);
     const valueId = num % 10;
-    console.log({suitId, valueId});
     return `${valueId * -130.5}px ${suitId * -226}px`;
   }
 
