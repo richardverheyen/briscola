@@ -50,7 +50,7 @@ exports.joinGame = functions
     gameRef
       .update({
         oppo: context.auth.uid,
-        playersTurn: context.auth.uid
+        currentPlayersTurn: context.auth.uid
       })
       .then(() => {
         startGame(data.id);

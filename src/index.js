@@ -30,7 +30,7 @@ root.render(
 //     trumps: "",
 //     lastCard: 33,
 //     gameState: "", // lobby, play, draw, scoreboard
-//     playersTurn: <id>,
+//     currentPlayersTurn: <id>,
 //     deckHeight: 36,
 
 //     // according to this, we can do private subcollections on a record
