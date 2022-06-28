@@ -1,0 +1,45 @@
+.DeckView {
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 280px;
+    height: 200px;
+    padding: 0 60px 60px 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    > li {
+        position: relative;
+        width: 40px;
+        height: 1px;
+        list-style: none;
+
+        > div {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            left: 50%;
+            transform: translate(-50%, 100px) rotateX(60deg) rotateZ(-5deg);
+            transform-origin: 58px 100px 0px;
+            width: 116px;
+            height: 200px;
+            // transition: transform ease 200ms, box-shadow ease 200ms;
+            border-radius: 10px;
+            box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.02);
+            background: white;
+            background-repeat: no-repeat;
+            background-size: 1300px;
+            
+        }
+        &:first-child > div {
+            transform: translate(-50%, 10px) rotateX(60deg) rotateZ(-95deg) ;
+            transform-origin: 58px 190px 0px;
+            background-image: url('./sprite.jpg');
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        }
+    }
+}

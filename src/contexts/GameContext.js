@@ -2,32 +2,36 @@ import { useContext, useState, createContext, useEffect } from "react";
 import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { Auth } from 'contexts';
+import { Auth } from "contexts";
+
+import { httpsCallable } from "firebase/functions";
+import { functions } from "utils/firebase";
 
 export const Game = createContext({
   id: undefined,
   game: undefined,
   setId: () => {},
   isHost: undefined,
-  quitGame: () => {}
+  quitGame: () => {},
 });
 
 function GameHooks() {
-  const {data: auth} = useContext(Auth);
+  const { auth } = useContext(Auth);
   let navigate = useNavigate();
-  const [isHost, setIsHost] = useState(false);
+  const [isPlayer, setIsPlayer] = useState(false);
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
+
+  const joinGame = httpsCallable(functions, "joinGame");
 
   // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
   const quitGame = () => setGameSnapshot(undefined);
 
   useEffect(() => {
     if (id) {
-      const unsubscribe = onSnapshot(
-        doc(firestore, "games", id),
-        (snapshot) => setGameSnapshot(snapshot)
+      const unsubscribe = onSnapshot(doc(firestore, "games", id), (snapshot) =>
+        setGameSnapshot(snapshot)
       );
       return unsubscribe;
     }
@@ -36,22 +40,40 @@ function GameHooks() {
   useEffect(() => {
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
-      setGame(gameData);
-      setIsHost(auth.uid === gameData.host);
 
+      if (!game) {
+        // it's a new game for this session/device
+        initEgo(gameData);
+      }
+
+      setGame(gameData);
     } else if (!gameSnapshot && id) {
       setGame(undefined);
-      setIsHost(undefined);
-      navigate('/'); 
+      setIsPlayer(undefined);
+      navigate("/");
     }
   }, [gameSnapshot]);
+
+  function initEgo(gameData) {
+    if (auth.uid === gameData.host) {
+      setIsPlayer(true);
+    } else {
+      joinGame({ id })
+        .then((res) => {
+          console.log("Joined game as opposition!", { res });
+        })
+        .catch((err) => {
+          console.error("Join Game Failed", { err });
+        });
+    }
+  }
 
   return {
     id,
     setId,
     game,
-    isHost,
-    quitGame
+    isPlayer,
+    quitGame,
   };
 }
 

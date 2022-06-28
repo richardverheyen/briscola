@@ -8,7 +8,7 @@ import { functions } from "utils/firebase";
 
 
 function Home() {
-  let { data } = useContext(Auth);
+  let { auth } = useContext(Auth);
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   const createGame = httpsCallable(functions, 'createGame');
@@ -28,16 +28,16 @@ function Home() {
   }
 
   return (
-    <div className="Home">
+    <main className="Home">
       <LoadingButton
-        disabled={!data}
+        disabled={!auth}
         loading={isLoading}
         onClick={handleCreateGame}
         variant="contained"
       >
         Create Game
       </LoadingButton>
-    </div>
+    </main>
   );
 }
 

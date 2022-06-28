@@ -1,5 +1,6 @@
-import { Auth, AuthProvider } from "./Auth";
-import { Game, GameProvider } from "./Game";
+import { Auth, AuthProvider } from "./AuthContext";
+import { Game, GameProvider } from "./GameContext";
+import { Hand, HandProvider } from "./HandContext";
 import { BrowserRouter } from "react-router-dom";
 
 function Providers({ children }) {
@@ -7,11 +8,13 @@ function Providers({ children }) {
     <BrowserRouter>
       <AuthProvider>
         <GameProvider>
-          {children}
+          <HandProvider>
+            {children}
+          </HandProvider>
         </GameProvider>
       </AuthProvider>
     </BrowserRouter>
   );
 }
 
-export { Auth, Game, Providers };
+export { Auth, Game, Hand, Providers };

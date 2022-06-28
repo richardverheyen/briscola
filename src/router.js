@@ -6,9 +6,9 @@ import Home from "components/Home";
 import Game from "components/Game";
 
 function Router() {
-  const { data } = useContext(Auth);
+  const { auth } = useContext(Auth);
 
-  return data ? (
+  return auth ? (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/game/:id" element={<Game />} />

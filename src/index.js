@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
+import './style.scss';
 
 import Router from "router";
 import Login from "components/Login";
@@ -30,7 +31,7 @@ root.render(
 //     trumps: "",
 //     lastCard: 33,
 //     gameState: "", // lobby, play, draw, scoreboard
-//     playersTurn: <id>,
+//     currentPlayersTurn: <id>,
 //     deckHeight: 36,
 
 //     // according to this, we can do private subcollections on a record
