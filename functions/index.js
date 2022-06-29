@@ -191,6 +191,7 @@ exports.takeCards = functions
     let game = Object.assign({}, gameSnapshot.data());
     let private = Object.assign({}, privateSnapshot.data());
     let hand = Object.assign({}, handSnapshot.data());
+    const otherPlayer = game.host === userId ? game.oppo : game.host;
 
     takeCardsValidations(game, hand, private, userId);
 
