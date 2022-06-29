@@ -42,8 +42,19 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
             &:hover {
-                transform: translate(-50%, -5px);
-                box-shadow: 0 2.5px 15px rgba(0, 0, 0, 0.1);
+                @media (min-width: 801px) {
+                    transform: translate(-50%, -5px);
+                    box-shadow: 0 2.5px 15px rgba(0, 0, 0, 0.1);
+                }
+            }
+            &:active {
+                filter: contrast(0.94);
+            }
+            &:focus {
+                @media (max-width: 800px) {
+                    transform: translate(-50%, -5px);
+                    box-shadow: 0 2.5px 15px rgba(0, 0, 0, 0.1);
+                }
             }
         }
 

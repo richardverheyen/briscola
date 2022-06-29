@@ -115,6 +115,13 @@ exports.playCard = functions
     } else if (game.trick.length === 2) {
       if (trickWon(game)) {
         game.currentPlayersTurn = userId;
+
+        if (hand.cards.length === 0 && private.deck.length === 0) {
+          game.gameState = "scoreboard";
+          game[userId] = private[userId];
+          game[otherPlayer] = private[otherPlayer];
+        }
+
       } else {
         game.currentPlayersTurn = otherPlayer;
       }

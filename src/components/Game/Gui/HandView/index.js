@@ -17,7 +17,9 @@ function HandView({ cards, selectCard }) {
       {cards.map((card, index) => {
         return (
           <li className="card-view" key={index}>
-            <div onClick={() => selectCard(card)} style={{backgroundPosition: spritePosition(card)}}>
+            <div 
+              tabIndex="0"
+              onClick={() => selectCard(card)} style={{backgroundPosition: spritePosition(card)}}>
               {/* {cardToImage(card)} */}
             </div>
           </li>

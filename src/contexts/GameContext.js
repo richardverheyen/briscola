@@ -3,6 +3,7 @@ import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "contexts";
+import toast from 'react-hot-toast';
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
@@ -45,6 +46,15 @@ function GameHooks() {
         // it's a new game for this session/device
         initEgo(gameData);
       }
+
+      if (gameData.gameState === "draw" && gameData.currentPlayersTurn === auth.uid) {
+        toast("It's your turn to draw");
+
+        if (gameData.deckHeight % 2 === 0) {
+          toast.success("You won that hand");
+        }
+      }
+      
 
       setGame(gameData);
     } else if (!gameSnapshot && id) {

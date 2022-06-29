@@ -15,26 +15,19 @@ function GamePage() {
     setId(id);
   }, []);
 
-  const gameUi = () => {
-    switch (game.gameState) {
-      case "lobby":
-        return <QrCode />;
-
-      case "scoreboard":
-        return <p>scoreboard</p>;
-
-      default:
-        return <Gui />;
-    }
-  };
+  if (!game) {
+    return <Button onClick={quitGame}>Quit</Button>;
+  }
 
   return (
-    <div className="Game">
-      {game && gameUi()}
-      <div>
-        <Button onClick={quitGame}>Quit</Button>
+    <main className="Game">
+      <div className="gutters">
+        {game?.gameState === "lobby" ? <QrCode /> : <Gui />}
+        <div>
+          <Button onClick={quitGame}>Quit</Button>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 

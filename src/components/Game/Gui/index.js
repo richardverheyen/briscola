@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Hand, Auth, Game } from "contexts";
 
+import toast from 'react-hot-toast';
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 
@@ -22,6 +23,11 @@ function Gui() {
         console.log("success!", { res });
       })
       .catch((err) => {
+        if (game.gameState !== "play") {
+          toast.error("You can't play a card right now");
+        } else {
+          toast.error("It's not your turn to play");
+        }
         console.error("Play Card Failed", { err });
       });
   };
@@ -32,6 +38,12 @@ function Gui() {
         console.log("success!", { res });
       })
       .catch((err) => {
+        if (game.gameState !== "draw") {
+          toast.error("You can't draw a card right now");
+        } else {
+          toast.error("It's not your turn to draw");
+        }
+
         console.error("Pick Up Failed", { err });
       });
   }
