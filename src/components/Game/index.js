@@ -2,6 +2,7 @@ import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 
+import { cardNameMapping } from "utils/helpers";
 import { Game } from "contexts";
 import QrCode from "./QrCode";
 import Gui from "./Gui";
@@ -15,6 +16,10 @@ function GamePage() {
     setId(id);
   }, []);
 
+  function cardToName(num) {
+    return cardNameMapping[num];
+  }
+
   if (!game) {
     return <Button onClick={quitGame}>Quit</Button>;
   }
@@ -23,6 +28,23 @@ function GamePage() {
     <main className="Game">
       <div className="gutters">
         {game?.gameState === "lobby" ? <QrCode /> : <Gui />}
+        {game?.gameState === "scoreboard" ? (
+          <div>
+            <p>{game.host} won these cards</p>
+            <ul>
+              {game[game.host].map((card, index) => {
+                <li key={index}>{cardToName(card)}</li>;
+              })}
+            </ul>
+
+            <p>{game.oppo} won these cards</p>
+            <ul>
+              {game[game.oppo].map((card, index) => {
+                <li key={index}>{cardToName(card)}</li>;
+              })}
+            </ul>
+          </div>
+        ) : null}
         <div>
           <Button onClick={quitGame}>Quit</Button>
         </div>
