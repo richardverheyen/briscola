@@ -87,7 +87,7 @@ exports.playCard = functions
     const userId = context.auth.uid;
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
-    let privateRef = gameRef.collection("private").doc("data");
+    // let privateRef = gameRef.collection("private").doc("data");
     let handRef = admin.firestore().collection("hands").doc(userId);
     const [gameSnapshot, handSnapshot] = await Promise.all([
       gameRef.get(),
@@ -111,13 +111,16 @@ exports.playCard = functions
       game.currentPlayersTurn = otherPlayer;
 
     } else if (game.trick.length === 2) {
-      game.gameState = "draw";
-
       if (trickWon(game)) {
         game.currentPlayersTurn = userId;
       } else {
         game.currentPlayersTurn = otherPlayer;
       }
+
+      if (private.deck.length !== 0) {
+        game.gameState = "draw";
+      }
+      
     } else {
       throw "played a card but new game.trick.length wasn't 1 or 2";
     }
