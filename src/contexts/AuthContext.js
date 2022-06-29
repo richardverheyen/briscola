@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { createContext } from 'react';
 
 import {  signInAnonymously } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -13,6 +13,10 @@ export const Auth = createContext({
 
 function AuthHooks() {
   const [auth, loading, error] = useAuthState(firebaseAuth);
+
+  if (error) {
+    console.error("error logging in", {error});
+  }
 
   const signIn = () => {
     signInAnonymously(firebaseAuth)

@@ -2,16 +2,24 @@
     position: fixed;
     top: 40%;
     left: 10px;
-    transform: translateY(-50%) scale(0.8);
+    transform: translate(0, -50%) scale(0.8);
     transform-origin: left;
     width: 180px;
     height: 140px;
-    padding: 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 0 0 0 40px;
+    transition: all ease 1s;
+
+    &.center {
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        padding: 0 0 0 50px;
+        cursor: pointer;
+    }
 
     > li {
         position: relative;

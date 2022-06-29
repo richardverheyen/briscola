@@ -33,8 +33,18 @@
             background: white;
             background-repeat: no-repeat;
             background-size: 1300px;
-            
+            cursor: pointer;
         }
+        &:last-child > div:hover {  
+            @media (min-width: 801px) {
+                filter: contrast(0.96);
+            }
+        }
+
+        &:last-child > div:active {
+            filter: contrast(0.94);
+        }
+        
         &:first-child > div {
             transform: translate(-50%, 10px) rotateX(60deg) rotateZ(-95deg) ;
             transform-origin: 58px 190px 0px;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import QRCode from "qrcode";
 import CopyToClipboard from "./CopyToClipboard";
 
@@ -17,10 +17,10 @@ function QrCode() {
   return (
     <>
       <p>Invite other players to the game by having them scan this QR Code</p>
-      <canvas id="canvas" width="200" height="200" />
+      <canvas id="canvas" />
       <p>or</p>
       <p>Have them join this URL:</p>
-      <div style={{background: "#efefef"}}>
+      <div style={{background: "#efefef", overflow: "scroll"}}>
         {window.location.href}
         <span>
           &nbsp;<CopyToClipboard url={window.location.href}/>

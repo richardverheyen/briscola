@@ -1,17 +1,13 @@
+import { spritePosition } from "utils/helpers";
 import "./style.scss";
 
-function TrickView({ trick }) {
-
-  function spritePosition(num) {
-    const suitId = Math.floor(num / 10);
-    const valueId = num % 10;
-    return `${valueId * -130.5}px ${suitId * -226}px`;
-  }
-
+function TrickView({ game, takeCards }) {
   return (
-    <ul className="TrickView">
+    <ul 
+      onClick={takeCards}
+      className={`TrickView ${game.deckHeight === 0 ? "center" : ""}`}>
       {
-        trick.map((card, index) => (
+        game.trick.map((card, index) => (
           <li key={index}>
             <div style={{ backgroundPosition: spritePosition(card) }}></div>
           </li>

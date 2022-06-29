@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
+import { Toaster } from 'react-hot-toast';
+
 import './style.scss';
 
 import Router from "router";
@@ -12,6 +14,7 @@ root.render(
     <Providers>
       <Login />
       <Router />
+      <Toaster />
     </Providers>
   </React.StrictMode>
 );

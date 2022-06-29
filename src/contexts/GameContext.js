@@ -1,8 +1,10 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import { cardToScore } from "utils/helpers";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "contexts";
+import toast from "react-hot-toast";
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
@@ -45,6 +47,42 @@ function GameHooks() {
         // it's a new game for this session/device
         initEgo(gameData);
       }
+
+      if (
+        gameData.gameState === "draw" &&
+        gameData.currentPlayersTurn === auth.uid
+      ) {
+        toast("It's your turn to draw");
+
+        if (gameData.deckHeight % 2 === 0) {
+          toast.success("You won that hand");
+        }
+      }
+
+      if (gameData.gameState === "scoreboard") {
+        toast("It's your turn to draw");
+
+        if (gameData.currentPlayersTurn === auth.uid) {
+          toast(
+            "You won with a score of " +
+              game[auth.uid].reduce((acc, card) => acc + cardToScore(card), 0),
+            {
+              icon: "🎉",
+              duration: 6000,
+            }
+          );
+        } else {
+          toast(
+            "You lost with a score of " +
+              game[auth.uid].reduce((acc, card) => acc + cardToScore(card), 0),
+            {
+              icon: "👏",
+            }
+          );
+        }
+      }
+
+      game[game.host].reduce((acc, card) => acc + cardToScore(card), 0);
 
       setGame(gameData);
     } else if (!gameSnapshot && id) {
