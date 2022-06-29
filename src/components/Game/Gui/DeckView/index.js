@@ -15,7 +15,6 @@ function DeckView({ deckHeight, lastCard }) {
         [...Array(deckHeight).keys()].map((card, index) => (
           <li key={index}>
             <div style={{
-              // backgroundImage: index == 0 ? `url('./sprite.jpg')` : "",
               backgroundPosition: index == 0 ? spritePosition(lastCard) : ""
               }}></div>
           </li>

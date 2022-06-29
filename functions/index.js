@@ -59,70 +59,25 @@ exports.joinGame = functions
 exports.playCard = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
-    // takes cardId from game.private.hostHand and puts it in game.trick
-    // removes cardId from user.hostHand
-    // if game.trick.length == 2
-    // set the game.gameState to 'draw'
-    // if user won the hand, put those cards in game.private.hostWon
-    // if user won the hand, is is their turn
     const { gameId, card } = data;
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
     const gameSnapshot = await gameRef.get();
     let game = gameSnapshot.data();
 
-    const playerIsInThisGame = (game, context) => {
-      if (
-        !Boolean(
-          context.auth.uid === game.host || context.auth.uid === game.oppo
-        )
-      ) {
-        throw "You aren't in this game";
-      }
-    };
+    let handRef = admin.firestore().collection("hands").doc(context.auth.uid);
+    const handSnapshot = await handRef.get();
+    let handData = [...handSnapshot.data().cards];
+    handData.splice(handData.indexOf(card), 1)
 
-    const theGameHasStarted = (game) => {
-      if (game.gameState !== "play") {
-        throw "The game.gameState is not 'play'";
-      }
-    };
+    handRef.update({
+      cards: handData,
+    });
 
-    const itIsThisPlayersTurn = (game, context) => {
-      if (game.currentPlayersTurn !== context.auth.uid) {
-        throw "It is not your turn";
-      }
-    };
-
-    // const thePlayerHasThisCard = (game, context) => {
-    //   if (game.currentPlayersTurn === context.auth.uid) {
-    //     return new Promise.success();
-    //   } else {
-    //     throw "It is not your turn";
-    //   }
-    // }
-
-    function playCard(card) {
-      console.log("playCard", card);
-    }
-
-    try {
-      playerIsInThisGame(game, context);
-      theGameHasStarted(game);
-      itIsThisPlayersTurn(game, context);
-      // thePlayerHasThisCard();
-      playCard(card);
-    } catch (error) {
-      throw new Error(error);
-    }
-
-    // gameRef
-    //   .update({
-    //     oppo: context.auth.uid,
-    //     currentPlayersTurn: context.auth.uid,
-    //   })
-    //   .then(() => {
-    //     startGame(data.id);
-    //   });
+    gameRef.update({
+      trick: [...game.trick, card],
+      currentPlayersTurn: game.currentPlayersTurn === context.auth.uid ? game.oppo : context.auth.uid
+    });
   });
 
 async function startGame(id) {
@@ -176,8 +131,8 @@ async function startGame(id) {
   let privateRef = gameRef.collection("private").add({
     originalDeck,
     deck,
-    hostHand,
-    oppoHand,
+    // hostHand,
+    // oppoHand,
   });
 
   gameRef.update({

@@ -6,6 +6,8 @@ import { functions } from "utils/firebase";
 
 import HandView from "./HandView";
 import DeckView from "./DeckView";
+import TrickView from "./TrickView";
+
 
 function Gui() {
   let { game, id } = useContext(Game);
@@ -14,8 +16,8 @@ function Gui() {
 
   const playCard = httpsCallable(functions, "playCard");
 
-  const handleCreateGame = () => {
-    playCard({ gameId: id, card: cards[0] })
+  const handleCreateGame = (card) => {
+    playCard({ gameId: id, card })
       .then((res) => {
         console.log("success!", { res });
       })
@@ -36,16 +38,17 @@ function Gui() {
         <li>Waiting for Opponent</li>
       </ul>
 
+      <TrickView 
+        trick={game.trick}
+        />
+
       <DeckView 
         deckHeight={game.deckHeight}
         lastCard={game.lastCard}
-
         />
       <HandView
         cards={cards}
-        selectCard={(card) => {
-          console.log("play card ", card);
-        }}
+        selectCard={handleCreateGame}
       />
     </div>
   );
