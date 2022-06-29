@@ -16,7 +16,6 @@ function Gui() {
   const playCard = httpsCallable(functions, "playCard");
 
   const handleSelectCard = (card) => {
-    // joinGame({ id }) // data.id
     playCard({ gameId, card })
       .then((res) => {
         console.log("success!", { res });

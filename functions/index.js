@@ -3,22 +3,13 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-exports.createHand = functions
-  .region("australia-southeast1")
-  .auth.user()
-  .onCreate((user) => {
-    admin.firestore().collection("hands").doc(user.uid).set({
-      cards: [],
-    });
-  });
-
-exports.watchGame = functions.firestore
-  .document("games/{docId}")
-  .onChange((change, context) => {
-    console.log({change, context});
-    // if trick.length == 2 change gameState to 'draw'
-    // give cards to winner
-  });
+// exports.watchGame = functions.firestore
+//   .document("games/{docId}")
+//   .onChange((change, context) => {
+//     console.log({change, context});
+//     // if trick.length == 2 change gameState to 'draw'
+//     // give cards to winner
+//   });
 
 // https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
 // https://firebase.google.com/docs/functions/callable
@@ -39,7 +30,7 @@ exports.joinGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
     const oppoId = context.auth.uid;
-    // console.log(data.id);
+
     let gameRef = admin.firestore().collection("games").doc(data.id);
     const gameSnapshot = await gameRef.get();
     let game = gameSnapshot.data();
@@ -88,25 +79,16 @@ exports.joinGame = functions
       }
     }
 
-    gameRef.collection("private").add({
-      originalDeck,
-      deck,
-    });
+    let batch = admin.firestore().batch();
 
-    console.log("hand ids", game.host, oppoId);
-    admin
-      .firestore()
-      .collection("hands")
-      .doc(game.host)
-      .update({ cards: hostHand, gameId: data.id });
+    let privateRef = gameRef.collection("private").doc("data");
+    let hostHandRef = admin.firestore().collection("hands").doc(game.host);
+    let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
 
-    admin
-      .firestore()
-      .collection("hands")
-      .doc(oppoId)
-      .update({ cards: oppoHand, gameId: data.id });
-
-    gameRef.update({
+    batch.set(privateRef, { originalDeck, deck });
+    batch.set(hostHandRef, { cards: hostHand, gameId: data.id });
+    batch.set(oppoHandRef, { cards: oppoHand, gameId: data.id });
+    batch.set(gameRef, {
       oppo: oppoId,
       currentPlayersTurn: oppoId,
       gameState: "play",
@@ -115,6 +97,8 @@ exports.joinGame = functions
       trick: [],
       trumps,
     });
+
+    batch.commit();
   });
 
 exports.playCard = functions
@@ -135,15 +119,16 @@ exports.playCard = functions
     let handData = [...handSnapshot.data().cards];
     handData.splice(handData.indexOf(card), 1);
 
-    handRef.update({
-      cards: handData,
-    });
-
-    gameRef.update({
+    let batch = admin.firestore().batch();
+    
+    batch.update(handRef, { cards: handData });
+    batch.update(gameRef, {
       trick: [...game.trick, card],
       currentPlayersTurn:
         game.currentPlayersTurn === context.auth.uid
           ? game.oppo
           : context.auth.uid,
     });
+
+    batch.commit();
   });
