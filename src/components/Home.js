@@ -1,11 +1,9 @@
 import { useContext, useState } from "react";
 import { Auth } from "contexts";
-import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useNavigate } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
-
 
 function Home() {
   let { auth } = useContext(Auth);

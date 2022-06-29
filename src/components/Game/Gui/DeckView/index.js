@@ -15,7 +15,7 @@ function DeckView({ deckHeight, lastCard, pickUp }) {
         [...Array(deckHeight).keys()].map((card, index) => (
           <li key={index}>
             <div style={{
-              backgroundPosition: index == 0 ? spritePosition(lastCard) : ""
+              backgroundPosition: index === 0 ? spritePosition(lastCard) : ""
               }}></div>
           </li>
         ))

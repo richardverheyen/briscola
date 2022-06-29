@@ -1,10 +1,10 @@
-import { cardNameMapping } from "utils/helpers";
+// import { cardNameMapping } from "utils/helpers";
 import "./style.scss";
 
 function HandView({ cards, selectCard }) {
-  function cardToImage(card) {
-    return cardNameMapping[card];
-  }
+  // function cardToImage(card) {
+  //   return cardNameMapping[card];
+  // }
 
   function spritePosition(num) {
     const suitId = Math.floor(num / 10);
