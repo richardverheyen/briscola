@@ -28,14 +28,7 @@ function Gui() {
   return (
     <div className="Gui">
       <p>You're player {auth.uid}</p>
-
-      <ul>
-        <li>It's your turn to play a card</li>
-        <li>You played king of cups</li>
-        <li>Opponent played 4 of swords</li>
-        <li>It's your turn to draw from the deck</li>
-        <li>Waiting for Opponent</li>
-      </ul>
+      <p>It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b> turn to <b>{game.gameState}</b></p>
 
       <TrickView 
         trick={game.trick}
