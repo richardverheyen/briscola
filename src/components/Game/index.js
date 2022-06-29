@@ -32,14 +32,14 @@ function GamePage() {
           <div>
             <p>{game.host} won these cards</p>
             <ul>
-              {game[game.host].map((card, index) => {
+              {game[game.host]?.map((card, index) => {
                 <li key={index}>{cardToName(card)}</li>;
               })}
             </ul>
 
             <p>{game.oppo} won these cards</p>
             <ul>
-              {game[game.oppo].map((card, index) => {
+              {game[game.oppo]?.map((card, index) => {
                 <li key={index}>{cardToName(card)}</li>;
               })}
             </ul>

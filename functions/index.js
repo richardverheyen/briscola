@@ -115,20 +115,11 @@ exports.playCard = functions
     } else if (game.trick.length === 2) {
       if (trickWon(game)) {
         game.currentPlayersTurn = userId;
-
-        if (hand.cards.length === 0 && private.deck.length === 0) {
-          game.gameState = "scoreboard";
-          game[userId] = private[userId];
-          game[otherPlayer] = private[otherPlayer];
-        }
-
       } else {
         game.currentPlayersTurn = otherPlayer;
       }
 
-      if (private.deck.length !== 0) {
-        game.gameState = "draw";
-      }
+      game.gameState = "draw";
 
     } else {
       throw "played a card but new game.trick.length wasn't 1 or 2";
@@ -183,6 +174,45 @@ exports.playCard = functions
     batch.commit();
   });
 
+exports.takeCards = functions
+  .region("australia-southeast1")
+  .https.onCall(async (data, context) => {
+    const { gameId } = data;
+    const userId = context.auth.uid;
+
+    let gameRef = admin.firestore().collection("games").doc(gameId);
+    let privateRef = gameRef.collection("private").doc("data");
+    let handRef = admin.firestore().collection("hands").doc(userId);
+    const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
+      gameRef.get(),
+      privateRef.get(),
+      handRef.get(),
+    ]);
+    let game = Object.assign({}, gameSnapshot.data());
+    let private = Object.assign({}, privateSnapshot.data());
+    let hand = Object.assign({}, handSnapshot.data());
+
+    takeCardsValidations(game, hand, private, userId);
+
+    // actions
+    game.gameState = "play";
+    private[userId].push(game.trick.shift());
+    private[userId].push(game.trick.shift());
+
+    if (hand.cards.length === 0 && private.deck.length === 0) {
+      game.gameState = "scoreboard";
+      game[userId] = private[userId];
+      game[otherPlayer] = private[otherPlayer];
+    }
+
+    let batch = admin.firestore().batch();
+    batch.update(gameRef, game);
+    batch.update(privateRef, private);
+    batch.update(handRef, hand);
+
+    batch.commit();
+  });
+
 function playCardValidations(game, hand, card, userId) {
   if (game.gameState !== "play") {
     throw "It's not the time to play a card";
@@ -199,6 +229,14 @@ function playCardValidations(game, hand, card, userId) {
 }
 
 function drawCardValidations(game, hand, private, userId) {
+  takeCardsValidations(game, hand, private, userId);
+
+  if (private.deck.length === 0) {
+    throw "There are no cards to take";
+  }
+}
+
+function takeCardsValidations(game, hand, private, userId) {
   if (game.gameState !== "draw") {
     throw "It's not the time to draw a card";
   }
@@ -206,9 +244,6 @@ function drawCardValidations(game, hand, private, userId) {
     throw "It's not this player's turn";
   }
   if (hand.cards.length === 3) {
-    throw "You can't draw a fourth card";
-  }
-  if (private.deck.length === 0) {
     throw "You can't draw a fourth card";
   }
 }

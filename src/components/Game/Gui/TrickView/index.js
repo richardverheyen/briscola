@@ -1,6 +1,6 @@
 import "./style.scss";
 
-function TrickView({ trick }) {
+function TrickView({ game, takeCards }) {
 
   function spritePosition(num) {
     const suitId = Math.floor(num / 10);
@@ -9,9 +9,11 @@ function TrickView({ trick }) {
   }
 
   return (
-    <ul className="TrickView">
+    <ul 
+      onClick={takeCards}
+      className={`TrickView ${game.deckHeight === 0 ? "center" : ""}`}>
       {
-        trick.map((card, index) => (
+        game.trick.map((card, index) => (
           <li key={index}>
             <div style={{ backgroundPosition: spritePosition(card) }}></div>
           </li>

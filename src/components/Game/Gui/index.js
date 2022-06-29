@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Hand, Auth, Game } from "contexts";
 
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 
@@ -16,6 +16,7 @@ function Gui() {
 
   const playCard = httpsCallable(functions, "playCard");
   const drawCard = httpsCallable(functions, "drawCard");
+  const takeCards = httpsCallable(functions, "takeCards");
 
   const handleSelectCard = (card) => {
     playCard({ gameId, card })
@@ -46,26 +47,45 @@ function Gui() {
 
         console.error("Pick Up Failed", { err });
       });
-  }
+  };
+
+  const handleTakeCards = () => {
+    if (game.deckHeight > 0) {
+      return;
+    }
+
+    takeCards({ gameId })
+      .then((res) => {
+        console.log("success!", { res });
+      })
+      .catch((err) => {
+        if (game.gameState !== "draw") {
+          toast.error("These aren't yours to take");
+        }
+
+        console.error("Pick Up Failed", { err });
+      });
+  };
 
   return (
     <div className="Gui">
       <p>You're player {auth.uid}</p>
-      <p>It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b> turn to <b>{game.gameState}</b></p>
+      <p>
+        It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b>{" "}
+        turn to <b>{game.gameState}</b>
+      </p>
 
-      <TrickView 
-        trick={game.trick}
-        />
+      <TrickView game={game} takeCards={handleTakeCards} />
 
-      <DeckView 
-        deckHeight={game.deckHeight}
-        lastCard={game.lastCard}
-        pickUp={handlePickUp}
+      {game.deckHeight > 0 ? (
+        <DeckView
+          deckHeight={game.deckHeight}
+          lastCard={game.lastCard}
+          pickUp={handlePickUp}
         />
-      <HandView
-        cards={cards}
-        selectCard={handleSelectCard}
-      />
+      ) : null}
+
+      <HandView cards={cards} selectCard={handleSelectCard} />
     </div>
   );
 }
