@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 
-import { cardNameMapping } from "utils/helpers";
+import { cardToScore, cardToName } from "utils/helpers";
 import { Game } from "contexts";
 import QrCode from "./QrCode";
 import Gui from "./Gui";
@@ -16,10 +16,6 @@ function GamePage() {
     setId(id);
   }, []);
 
-  function cardToName(num) {
-    return cardNameMapping[num];
-  }
-
   if (!game) {
     return <Button onClick={quitGame}>Quit</Button>;
   }
@@ -31,16 +27,18 @@ function GamePage() {
         {game?.gameState === "scoreboard" ? (
           <div>
             <p>{game.host} won these cards</p>
+            <p>Total: {game[game.host].reduce((acc, card) => acc + cardToScore(card), 0)}</p>
             <ul>
               {game[game.host]?.map((card, index) => {
-                <li key={index}>{cardToName(card)}</li>;
+                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>;
               })}
             </ul>
 
             <p>{game.oppo} won these cards</p>
+            <p>Total: {game[game.oppo].reduce((acc, card) => acc + cardToScore(card), 0)}</p>
             <ul>
               {game[game.oppo]?.map((card, index) => {
-                <li key={index}>{cardToName(card)}</li>;
+                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>;
               })}
             </ul>
           </div>

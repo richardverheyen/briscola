@@ -1,12 +1,7 @@
+import { spritePosition } from "utils/helpers";
 import "./style.scss";
 
 function DeckView({ deckHeight, lastCard, pickUp }) {
-  function spritePosition(num) {
-    const suitId = Math.floor(num / 10);
-    const valueId = num % 10;
-    return `${valueId * -130.5}px ${suitId * -226}px`;
-  }
-
   return (
     <ul className="DeckView" onClick={pickUp}>
       {[...Array(deckHeight).keys()].map((card, index) => (
