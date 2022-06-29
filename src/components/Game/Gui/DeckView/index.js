@@ -1,6 +1,6 @@
 import "./style.scss";
 
-function DeckView({ deckHeight, lastCard }) {
+function DeckView({ deckHeight, lastCard, pickUp }) {
 
   function spritePosition(num) {
     const suitId = Math.floor(num / 10);
@@ -10,7 +10,7 @@ function DeckView({ deckHeight, lastCard }) {
 
 
   return (
-    <ul className="DeckView">
+    <ul className="DeckView" onClick={pickUp}>
       {
         [...Array(deckHeight).keys()].map((card, index) => (
           <li key={index}>

@@ -3,9 +3,6 @@ import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Auth, Game } from "contexts";
 
-import { httpsCallable } from "firebase/functions";
-import { functions } from "utils/firebase";
-
 export const Hand = createContext();
 
 function HandHooks() {

@@ -14,6 +14,7 @@ function Gui() {
   let { cards } = useContext(Hand);
 
   const playCard = httpsCallable(functions, "playCard");
+  const drawCard = httpsCallable(functions, "drawCard");
 
   const handleSelectCard = (card) => {
     playCard({ gameId, card })
@@ -24,6 +25,16 @@ function Gui() {
         console.error("Play Card Failed", { err });
       });
   };
+
+  const handlePickUp = () => {
+    drawCard({ gameId })
+      .then((res) => {
+        console.log("success!", { res });
+      })
+      .catch((err) => {
+        console.error("Pick Up Failed", { err });
+      });
+  }
 
   return (
     <div className="Gui">
@@ -37,6 +48,7 @@ function Gui() {
       <DeckView 
         deckHeight={game.deckHeight}
         lastCard={game.lastCard}
+        pickUp={handlePickUp}
         />
       <HandView
         cards={cards}

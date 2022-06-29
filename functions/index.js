@@ -60,7 +60,11 @@ exports.joinGame = functions
     let hostHandRef = admin.firestore().collection("hands").doc(game.host);
     let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
 
-    batch.set(privateRef, { originalDeck, deck });
+    let private = { originalDeck, deck };
+    private[game.host] = [];
+    private[oppoId] = [];
+
+    batch.set(privateRef, private);
     batch.set(hostHandRef, { cards: hostHand, gameId: data.id });
     batch.set(oppoHandRef, { cards: oppoHand, gameId: data.id });
     batch.update(gameRef, {
@@ -102,7 +106,6 @@ exports.playCard = functions
     // change the players turn from the card player to EITHER the other player (if the trick.length is 1)
     // or the same player if the trick.length == 2 && this player wins the trick.
     const otherPlayer = game.host === userId ? game.oppo : game.host;
-    console.log({userId, otherPlayer}, game.currentPlayersTurn);
 
     if (game.trick.length === 1) {
       game.currentPlayersTurn = otherPlayer;
@@ -126,6 +129,48 @@ exports.playCard = functions
     batch.commit();
   });
 
+  exports.drawCard = functions
+  .region("australia-southeast1")
+  .https.onCall(async (data, context) => {
+    const { gameId } = data;
+    const userId = context.auth.uid;
+
+    let gameRef = admin.firestore().collection("games").doc(gameId);
+    let privateRef = gameRef.collection("private").doc("data");
+    let handRef = admin.firestore().collection("hands").doc(userId);
+    const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
+      gameRef.get(),
+      privateRef.get(),
+      handRef.get(),
+    ]);
+    let game = Object.assign({}, gameSnapshot.data());
+    let private = Object.assign({}, privateSnapshot.data());
+    let hand = Object.assign({}, handSnapshot.data());
+    const otherPlayer = game.host === userId ? game.oppo : game.host;
+
+    drawCardValidations(game, hand, private, userId);
+
+    // actions
+    hand.cards.push(private.deck.shift());
+    game.deckHeight = private.deck.length;
+    game.currentPlayersTurn = otherPlayer;
+
+    // sideEffects
+    if (private.deck.length % 2 === 0) { // you are the second player to draw
+      // put the last trick in the other player's winnings (because you're the loser of the last round)
+      private[otherPlayer].push(game.trick.shift());
+      private[otherPlayer].push(game.trick.shift());
+      game.gameState = "play";
+    }
+
+    let batch = admin.firestore().batch();
+    batch.update(gameRef, game);
+    batch.update(privateRef, private);
+    batch.update(handRef, hand);
+
+    batch.commit();
+  });
+
 function playCardValidations(game, hand, card, userId) {
   if (game.gameState !== "play") {
     throw "It's not the time to play a card";
@@ -138,6 +183,21 @@ function playCardValidations(game, hand, card, userId) {
   }
   if (!hand.cards.includes(card)) {
     throw "This player doesn't have this card";
+  }
+}
+
+function drawCardValidations(game, hand, private, userId) {
+  if (game.gameState !== "draw") {
+    throw "It's not the time to draw a card";
+  }
+  if (game.currentPlayersTurn !== userId) {
+    throw "It's not this player's turn";
+  }
+  if (hand.cards.length === 3) {
+    throw "You can't draw a fourth card";
+  }
+  if (private.deck.length === 0) {
+    throw "You can't draw a fourth card";
   }
 }
 
@@ -176,20 +236,27 @@ function trickWon(game) {
   const topCard = game.trick[1];
   const bottomCardSuit = cardToSuit(bottomCard);
   const topCardSuit = cardToSuit(topCard);
-
-  console.log({trumps, bottomCard, topCard, bottomCardSuit, topCardSuit});
+  // console.log({trumps, bottomCard, topCard, bottomCardSuit, topCardSuit});
 
   if (bottomCardSuit === trumps && topCardSuit !== trumps) {
-    console.log("you lost! they played trumps and you didn't");
-    return false; // they played trumps and you didn't
-  } else if (bottomCardSuit !== topCardSuit && topCardSuit !== trumps) {
-    console.log("you lost! you couldn't follow suit and didn't play trumps");
-    return false; // you couldn't follow suit and didn't play trumps
-  } else if (cardToPower(bottomCard) > cardToPower(topCard)) {
+    console.log("you lost! They played trumps and you didn't");
+    return false;
+
+  } else if (topCardSuit === trumps) {
+    console.log("you won! You played trumps and they didn't");
+    return true; 
+  }
+  
+  if (bottomCardSuit !== topCardSuit) {
+    console.log("you lost! you couldn't follow suit");
+    return false;
+  }
+
+  if (cardToPower(bottomCard) > cardToPower(topCard)) {
     console.log("you lost! their card was more powerful");
-    return false; // their card was more powerful
+    return false;
   } else {
-    console.log("you won!");
+    console.log("you won! your card was more powerful");
     return true;
   }
 }
