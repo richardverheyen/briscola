@@ -8,21 +8,21 @@ import HandView from "./HandView";
 import DeckView from "./DeckView";
 import TrickView from "./TrickView";
 
-
 function Gui() {
-  let { game, id } = useContext(Game);
+  let { game, id: gameId } = useContext(Game);
   let { auth } = useContext(Auth);
   let { cards } = useContext(Hand);
 
   const playCard = httpsCallable(functions, "playCard");
 
-  const handleCreateGame = (card) => {
-    playCard({ gameId: id, card })
+  const handleSelectCard = (card) => {
+    // joinGame({ id }) // data.id
+    playCard({ gameId, card })
       .then((res) => {
         console.log("success!", { res });
       })
       .catch((err) => {
-        console.error("Create Game Failed", { err });
+        console.error("Play Card Failed", { err });
       });
   };
 
@@ -48,7 +48,7 @@ function Gui() {
         />
       <HandView
         cards={cards}
-        selectCard={handleCreateGame}
+        selectCard={handleSelectCard}
       />
     </div>
   );
