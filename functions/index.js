@@ -3,27 +3,6 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-exports.createHand = functions
-  .region("australia-southeast1")
-  .auth.user()
-  .onCreate((user) => {
-    admin.firestore().collection("hands").doc(user.uid).set({
-      cards: [],
-    });
-  });
-
-// exports.createGame = functions.https.onRequest(async function(req, res) {
-//     return cors(req, res, async () => {
-
-//         const {id} = await admin.firestore().collection('games').add({
-//             // host:
-//             gameState: "lobby",
-//         });
-
-//         res.send({id});
-//     });
-// });
-
 // https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
 // https://firebase.google.com/docs/functions/callable
 exports.createGame = functions
@@ -42,160 +21,175 @@ exports.createGame = functions
 exports.joinGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
+    const oppoId = context.auth.uid;
+
     let gameRef = admin.firestore().collection("games").doc(data.id);
+    const gameSnapshot = await gameRef.get();
+    let game = gameSnapshot.data();
 
-    // if oppo is truthy, fail this request because the game is already full
+    if (game.gameState !== "lobby") {
+      return;
+    }
 
-    gameRef
-      .update({
-        oppo: context.auth.uid,
-        currentPlayersTurn: context.auth.uid,
-      })
-      .then(() => {
-        startGame(data.id);
-      });
+    let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
+    let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
+    let hostHand = [];
+    let oppoHand = [];
+    let lastCard;
+    let trumps;
+
+    hostHand.push(deck.shift());
+    oppoHand.push(deck.shift());
+    hostHand.push(deck.shift());
+    oppoHand.push(deck.shift());
+    hostHand.push(deck.shift());
+    oppoHand.push(deck.shift());
+    assignTrumps();
+
+    function assignTrumps() {
+      let topCard = deck[0];
+      lastCard = topCard;
+      trumps = cardToSuit(topCard);
+
+      deck.push(deck.shift()); // move the first deck card to the end of the deck array
+    }
+
+    let batch = admin.firestore().batch();
+
+    let privateRef = gameRef.collection("private").doc("data");
+    let hostHandRef = admin.firestore().collection("hands").doc(game.host);
+    let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
+
+    batch.set(privateRef, { originalDeck, deck });
+    batch.set(hostHandRef, { cards: hostHand, gameId: data.id });
+    batch.set(oppoHandRef, { cards: oppoHand, gameId: data.id });
+    batch.update(gameRef, {
+      oppo: oppoId,
+      currentPlayersTurn: oppoId,
+      gameState: "play",
+      lastCard,
+      deckHeight: deck.length,
+      trick: [],
+      trumps,
+    });
+
+    batch.commit();
   });
 
 exports.playCard = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
-    // takes cardId from game.private.hostHand and puts it in game.trick
-    // removes cardId from user.hostHand
-    // if game.trick.length == 2
-    // set the game.gameState to 'draw'
-    // if user won the hand, put those cards in game.private.hostWon
-    // if user won the hand, is is their turn
     const { gameId, card } = data;
+    const userId = context.auth.uid;
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
-    const gameSnapshot = await gameRef.get();
-    let game = gameSnapshot.data();
+    let privateRef = gameRef.collection("private").doc("data");
+    let handRef = admin.firestore().collection("hands").doc(userId);
+    const [gameSnapshot, handSnapshot] = await Promise.all([
+      gameRef.get(),
+      handRef.get(),
+    ]);
+    let game = Object.assign({}, gameSnapshot.data());
+    let hand = Object.assign({}, handSnapshot.data());
 
-    const playerIsInThisGame = (game, context) => {
-      if (
-        !Boolean(
-          context.auth.uid === game.host || context.auth.uid === game.oppo
-        )
-      ) {
-        throw "You aren't in this game";
+    playCardValidations(game, hand, card, userId);
+
+    // actions
+    hand.cards.splice(hand.cards.indexOf(card), 1); // remove the card being played from the hand
+    game.trick = [...game.trick, card];
+
+    // sideEffects
+    // change the players turn from the card player to EITHER the other player (if the trick.length is 1)
+    // or the same player if the trick.length == 2 && this player wins the trick.
+    const otherPlayer = game.host === userId ? game.oppo : game.host;
+    console.log({userId, otherPlayer}, game.currentPlayersTurn);
+
+    if (game.trick.length === 1) {
+      game.currentPlayersTurn = otherPlayer;
+
+    } else if (game.trick.length === 2) {
+      game.gameState = "draw";
+
+      if (trickWon(game)) {
+        game.currentPlayersTurn = userId;
+      } else {
+        game.currentPlayersTurn = otherPlayer;
       }
-    };
-
-    const theGameHasStarted = (game) => {
-      if (game.gameState !== "play") {
-        throw "The game.gameState is not 'play'";
-      }
-    };
-
-    const itIsThisPlayersTurn = (game, context) => {
-      if (game.currentPlayersTurn !== context.auth.uid) {
-        throw "It is not your turn";
-      }
-    };
-
-    // const thePlayerHasThisCard = (game, context) => {
-    //   if (game.currentPlayersTurn === context.auth.uid) {
-    //     return new Promise.success();
-    //   } else {
-    //     throw "It is not your turn";
-    //   }
-    // }
-
-    function playCard(card) {
-      console.log("playCard", card);
+    } else {
+      throw "played a card but new game.trick.length wasn't 1 or 2";
     }
 
-    try {
-      playerIsInThisGame(game, context);
-      theGameHasStarted(game);
-      itIsThisPlayersTurn(game, context);
-      // thePlayerHasThisCard();
-      playCard(card);
-    } catch (error) {
-      throw new Error(error);
-    }
+    let batch = admin.firestore().batch();
+    batch.update(handRef, hand);
+    batch.update(gameRef, game);
 
-    // gameRef
-    //   .update({
-    //     oppo: context.auth.uid,
-    //     currentPlayersTurn: context.auth.uid,
-    //   })
-    //   .then(() => {
-    //     startGame(data.id);
-    //   });
+    batch.commit();
   });
 
-async function startGame(id) {
-  let gameRef = admin.firestore().collection("games").doc(id);
-  const gameSnapshot = await gameRef.get();
-  let game = gameSnapshot.data();
-  if (game.gameState !== "lobby") {
-    return;
+function playCardValidations(game, hand, card, userId) {
+  if (game.gameState !== "play") {
+    throw "It's not the time to play a card";
   }
-
-  let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
-  let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
-  let hostHand = [];
-  let oppoHand = [];
-  let lastCard;
-  let trumps;
-
-  hostHand.push(deck.shift());
-  oppoHand.push(deck.shift());
-  hostHand.push(deck.shift());
-  oppoHand.push(deck.shift());
-  hostHand.push(deck.shift());
-  oppoHand.push(deck.shift());
-  assignTrumps();
-
-  function assignTrumps() {
-    let topCard = deck[0];
-    lastCard = topCard;
-    trumps = cardNumberToSuit(topCard);
-
-    deck.push(deck.shift()); // move the first deck card to the end of the deck array
+  if (game.currentPlayersTurn !== userId) {
+    throw "It's not this player's turn";
   }
-
-  function cardNumberToSuit(num) {
-    const suitId = Math.floor(num / 10);
-    switch (suitId) {
-      case 0:
-        return "coins";
-
-      case 1:
-        return "cups";
-
-      case 2:
-        return "bats";
-
-      case 3:
-        return "swords";
-    }
+  if (game.trick.length >= 2) {
+    throw "You can't play a third card";
   }
+  if (!hand.cards.includes(card)) {
+    throw "This player doesn't have this card";
+  }
+}
 
-  let privateRef = gameRef.collection("private").add({
-    originalDeck,
-    deck,
-    hostHand,
-    oppoHand,
-  });
+function cardToSuit(num) {
+  const suitId = Math.floor(num / 10);
+  switch (suitId) {
+    case 0:
+      return "coins";
 
-  gameRef.update({
-    gameState: "play",
-    lastCard,
-    deckHeight: deck.length,
-    trick: [],
-    trumps,
-  });
+    case 1:
+      return "cups";
 
-  await admin
-    .firestore()
-    .collection("hands")
-    .doc(game.host)
-    .update({ cards: hostHand, gameId: id });
-  await admin
-    .firestore()
-    .collection("hands")
-    .doc(game.oppo)
-    .update({ cards: oppoHand, gameId: id });
+    case 2:
+      return "bats";
+
+    case 3:
+      return "swords";
+  }
+}
+
+function cardToPower(num) {
+  let powerScore = num % 10;
+
+  if (powerScore === 0) {
+    powerScore = 11;
+  } else if (powerScore === 2) {
+    powerScore = 10;
+  }
+  
+  return powerScore;
+}
+
+function trickWon(game) {
+  const trumps = game.trumps;
+  const bottomCard = game.trick[0];
+  const topCard = game.trick[1];
+  const bottomCardSuit = cardToSuit(bottomCard);
+  const topCardSuit = cardToSuit(topCard);
+
+  console.log({trumps, bottomCard, topCard, bottomCardSuit, topCardSuit});
+
+  if (bottomCardSuit === trumps && topCardSuit !== trumps) {
+    console.log("you lost! they played trumps and you didn't");
+    return false; // they played trumps and you didn't
+  } else if (bottomCardSuit !== topCardSuit && topCardSuit !== trumps) {
+    console.log("you lost! you couldn't follow suit and didn't play trumps");
+    return false; // you couldn't follow suit and didn't play trumps
+  } else if (cardToPower(bottomCard) > cardToPower(topCard)) {
+    console.log("you lost! their card was more powerful");
+    return false; // their card was more powerful
+  } else {
+    console.log("you won!");
+    return true;
+  }
 }
