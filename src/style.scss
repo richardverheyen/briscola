@@ -8,27 +8,13 @@ body {
     background-color: #fbfbfb;
   }
   
-  main {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-  
   .gutters {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
     box-sizing: border-box;
-    height: 100%;
     width: 100%;
-    max-width: 1140px;
+    max-width: 900px;
     padding: 0 20px;
     margin: 0 auto;
   }
 
-  canvas {
-    height: 300px!important;
-    width: 300px!important;
-  }
+
   

@@ -1,0 +1,16 @@
+header#header {
+    // background-color: #f1f1f1;
+    position: fixed;
+    left: 0;
+    width: 100%;
+
+    > div {
+        display: flex;
+        align-items: center;
+        height: 60px;
+
+        button[aria-label=menu] {
+            margin-left: auto;
+        }
+    }
+}

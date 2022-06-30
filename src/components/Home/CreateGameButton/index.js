@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 
-function Home() {
+export default function CreateGameButton() {
   let { auth } = useContext(Auth);
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
@@ -26,19 +26,13 @@ function Home() {
   };
 
   return (
-    <main className="Home">
-      <div className="gutters">
-        <LoadingButton
-          disabled={!auth}
-          loading={isLoading}
-          onClick={handleCreateGame}
-          variant="contained"
-        >
-          Create Game
-        </LoadingButton>
-      </div>
-    </main>
+    <LoadingButton
+      disabled={!auth}
+      loading={isLoading}
+      onClick={handleCreateGame}
+      variant="contained"
+    >
+      Create Game
+    </LoadingButton>
   );
 }
-
-export default Home;

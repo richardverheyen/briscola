@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import QRCode from "qrcode";
 import CopyToClipboard from "./CopyToClipboard";
+import "style.scss";
 
 function QrCode() {
   useEffect(() => {
