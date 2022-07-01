@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Hand, Auth, Game } from "contexts";
 
-import toast from "react-hot-toast";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
+import { playCardError, drawCardError, takeCardError } from "utils/toast";
 
 import HandView from "./HandView";
 import DeckView from "./DeckView";
@@ -24,11 +24,7 @@ function Gui() {
         console.log("success!", { res });
       })
       .catch((err) => {
-        if (game.gameState !== "play") {
-          toast.error("You can't play a card right now");
-        } else {
-          toast.error("It's not your turn to play");
-        }
+        playCardError(game);
         console.error("Play Card Failed", { err });
       });
   };
@@ -39,12 +35,7 @@ function Gui() {
         console.log("success!", { res });
       })
       .catch((err) => {
-        if (game.gameState !== "draw") {
-          toast.error("You can't draw a card right now");
-        } else {
-          toast.error("It's not your turn to draw");
-        }
-
+        drawCardError(game);
         console.error("Pick Up Failed", { err });
       });
   };
@@ -59,21 +50,17 @@ function Gui() {
         console.log("success!", { res });
       })
       .catch((err) => {
-        if (game.gameState !== "draw") {
-          toast.error("These aren't yours to take");
-        }
-
+        takeCardError(game);
         console.error("Pick Up Failed", { err });
       });
   };
 
   return (
     <div className="Gui">
-      <p>You're player {auth.uid}</p>
-      <p>
+      <span>
         It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b>{" "}
         turn to <b>{game.gameState}</b>
-      </p>
+      </span>
 
       <TrickView game={game} takeCards={handleTakeCards} />
 

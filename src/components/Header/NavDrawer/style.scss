@@ -1,0 +1,33 @@
+#NavDrawer {
+    width: 400px;
+
+    @media (max-width: 500px) {
+        width: 100vw;
+    }
+
+    > div {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        height: 100%;
+        padding-top: 20px;
+
+        .name {
+            display: flex;
+            align-items: center;
+            height: 48px;
+            margin-right: 48px;
+        }
+
+        button[aria-label=close] {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        > * {
+            margin-bottom: 10px;
+        }
+    }
+}

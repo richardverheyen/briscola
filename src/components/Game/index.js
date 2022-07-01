@@ -1,6 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
+import './style.scss';
 
 import { cardToScore, cardToName } from "utils/helpers";
 import { Game } from "contexts";
@@ -17,11 +18,11 @@ function GamePage() {
   }, []);
 
   if (!game) {
-    return <Button onClick={quitGame}>Quit</Button>;
+    return <p>loading</p>;
   }
 
   return (
-    <main className="Game">
+    <main id="Game">
       <div className="gutters">
         {game?.gameState === "lobby" ? <QrCode /> : <Gui />}
         {game?.gameState === "scoreboard" ? (
@@ -43,9 +44,6 @@ function GamePage() {
             </ul>
           </div>
         ) : null}
-        <div>
-          <Button onClick={quitGame}>Quit</Button>
-        </div>
       </div>
     </main>
   );
