@@ -8,7 +8,7 @@ function Home() {
     <main id="Home">
       <div className="gutters">
         <h1>Briscola</h1>
-        <h2>Multiplayer, live, free</h2>
+        <h2>Two player multiplayer</h2>
         <CreateGameButton />
       </div>
     </main>

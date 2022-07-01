@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { cardToScore } from "utils/helpers";
+import Button from "@mui/material/Button";
 
 export function yourTurnToDraw(game, userId) {
   if (game.gameState === "draw" && game.currentPlayersTurn === userId) {
@@ -56,4 +57,35 @@ export function takeCardError(game) {
   if (game.gameState !== "draw") {
     toast.error("These aren't yours to take");
   }
+}
+
+export function promptSetUsername(openModal) {
+  toast(
+    (t) => (
+      <span>
+        Would you like to quickly{" "}
+        <a
+          style={{ textDecoration: "underline", cursor: "pointer" }}
+
+          onClick={() => {
+            openModal();
+            toast.dismiss(t.id);
+          }}
+        >
+          set a username
+        </a>
+        ?
+      </span>
+    ),
+    {
+      duration: 6000,
+      icon: '👋',
+    }
+  );
+}
+
+export function greetUser(auth) {
+  toast(`Nice to meet you ${auth.displayName}`, {
+    icon: '🤝'
+  });
 }
