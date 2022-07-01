@@ -57,11 +57,10 @@ function Gui() {
 
   return (
     <div className="Gui">
-      <p>You're player {auth.uid}</p>
-      <p>
+      <span>
         It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b>{" "}
         turn to <b>{game.gameState}</b>
-      </p>
+      </span>
 
       <TrickView game={game} takeCards={handleTakeCards} />
 

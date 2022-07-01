@@ -17,7 +17,7 @@ function GamePage() {
   }, []);
 
   if (!game) {
-    return <Button onClick={quitGame}>Quit</Button>;
+    return <p>loading</p>;
   }
 
   return (
@@ -43,9 +43,6 @@ function GamePage() {
             </ul>
           </div>
         ) : null}
-        <div>
-          <Button onClick={quitGame}>Quit</Button>
-        </div>
       </div>
     </main>
   );

@@ -17,7 +17,7 @@ function QrCode() {
 
   return (
     <>
-      <p>Invite other players to the game by having them scan this QR Code</p>
+      <div>Invite other players to the game by having them scan this QR Code</div>
       <canvas id="canvas" />
       <p>or</p>
       <p>Have them join this URL:</p>
