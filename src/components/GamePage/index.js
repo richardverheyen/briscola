@@ -1,7 +1,6 @@
+import './style.scss';
 import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
-import Button from "@mui/material/Button";
-import './style.scss';
 
 import { cardToScore, cardToName } from "utils/helpers";
 import { Game } from "contexts";
@@ -9,7 +8,7 @@ import QrCode from "./QrCode";
 import Gui from "./Gui";
 
 function GamePage() {
-  let { game, quitGame, setId } = useContext(Game);
+  let { game, setId } = useContext(Game);
   let { id } = useParams();
 
   // sets the Game context with the id from the URL (for both host and oppo)
@@ -18,11 +17,11 @@ function GamePage() {
   }, []);
 
   if (!game) {
-    return <p>loading</p>;
+    return null;
   }
 
   return (
-    <main id="Game">
+    <main id="GamePage">
       <div className="gutters">
         {game?.gameState === "lobby" ? <QrCode /> : <Gui />}
         {game?.gameState === "scoreboard" ? (
