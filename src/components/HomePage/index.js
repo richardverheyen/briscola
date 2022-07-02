@@ -2,9 +2,9 @@ import "./style.scss";
 import CreateGameButton from "./CreateGameButton";
 import Button from "@mui/material/Button";
 
-function Home() {
+function HomePage() {
   return (
-    <main id="Home">
+    <main id="HomePage">
       <div className="gutters">
         <h1>Briscola</h1>
         <h2>Two player multiplayer</h2>
@@ -15,4 +15,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;

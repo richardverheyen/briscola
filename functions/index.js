@@ -290,7 +290,7 @@ function trickWon(game) {
     console.log("you lost! They played trumps and you didn't");
     return false;
 
-  } else if (topCardSuit === trumps) {
+  } else if (bottomCardSuit !== trumps && topCardSuit === trumps) {
     console.log("you won! You played trumps and they didn't");
     return true; 
   }
