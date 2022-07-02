@@ -12,13 +12,10 @@ function Router() {
     signIn();
 
     const appHeight = () => {
-      const doc = document.documentElement;
-      doc.style.setProperty('-main-bg-color', `${window.innerHeight}px`);
-      console.log('foo');
-     }
-     window.addEventListener('resize', appHeight)
-     appHeight()
-
+      document.documentElement.style.setProperty("--doc-height", `${window.innerHeight}px`);
+    };
+    window.addEventListener("resize", appHeight);
+    appHeight();
   }, []);
 
   return auth ? (
