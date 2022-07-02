@@ -1,8 +1,4 @@
 .DeckView {
-    // position: fixed;
-    // top: 40%;
-    // right: 10px;
-    // transform: translateY(-50%) scale(0.8);
     transform-origin: right;
     width: 280px;
     height: 150px;
@@ -12,6 +8,7 @@
     flex-direction: column-reverse;
     justify-content: flex-start;
     align-items: flex-end;
+    // transform: scale(0.8);
 
     > li {
         position: relative;

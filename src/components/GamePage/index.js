@@ -8,7 +8,7 @@ import QrCode from "./QrCode";
 import Gui from "./Gui";
 
 function GamePage() {
-  let { game, setId } = useContext(Game);
+  let { game, setId, isHost } = useContext(Game);
   let { id } = useParams();
 
   // sets the Game context with the id from the URL (for both host and oppo)
@@ -23,7 +23,7 @@ function GamePage() {
   return (
     <main id="GamePage">
       <div className="gutters">
-        {game?.gameState === "lobby" ? <QrCode /> : <Gui />}
+        {game?.gameState === "lobby" && isHost ? <QrCode /> : <Gui />}
         {game?.gameState === "scoreboard" ? (
           <div>
             <p>{game.host} won these cards</p>

@@ -56,6 +56,10 @@ function Gui() {
       });
   };
 
+  if (!game) {
+    return null;
+  }
+
   return (
     <div className="Gui">
       <span>
