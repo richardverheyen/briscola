@@ -10,6 +10,15 @@ function Router() {
 
   useEffect(() => {
     signIn();
+
+    const appHeight = () => {
+      const doc = document.documentElement;
+      doc.style.setProperty('-main-bg-color', `${window.innerHeight}px`);
+      console.log('foo');
+     }
+     window.addEventListener('resize', appHeight)
+     appHeight()
+
   }, []);
 
   return auth ? (

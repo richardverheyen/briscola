@@ -1,3 +1,4 @@
+import './style.scss';
 import { useContext } from "react";
 import { Hand, Auth, Game } from "contexts";
 
@@ -62,15 +63,18 @@ function Gui() {
         turn to <b>{game.gameState}</b>
       </span>
 
-      <TrickView game={game} takeCards={handleTakeCards} />
+      <div className="center">
+        <TrickView game={game} takeCards={handleTakeCards} />
 
-      {game.deckHeight > 0 ? (
-        <DeckView
-          deckHeight={game.deckHeight}
-          lastCard={game.lastCard}
-          pickUp={handlePickUp}
-        />
-      ) : null}
+        {game.deckHeight > 0 ? (
+          <DeckView
+            deckHeight={game.deckHeight}
+            lastCard={game.lastCard}
+            pickUp={handlePickUp}
+          />
+        ) : null}
+      </div>
+      
 
       <HandView cards={cards} selectCard={handleSelectCard} />
     </div>

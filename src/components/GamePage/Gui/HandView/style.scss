@@ -1,14 +1,15 @@
 .HandView {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translatex(-50%);
+    // position: fixed;
+    // bottom: 40px;
+    // left: 50%;
+    // transform: translatex(-50%);
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
     align-items: flex-end;
     height: 240px;
     padding: 0;
+    margin: 0;
 
     .card-view {
         position: relative;
