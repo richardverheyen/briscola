@@ -1,8 +1,7 @@
-
-main#Game {
+main#GamePage {
     > div {
         h2 {
-            margin-top: 100px;
+            margin-top: auto;
             text-align: center;
 
             @media (max-width: 500px) {
@@ -26,6 +25,7 @@ main#Game {
             padding: 10px 10px 10px 20px;
             background: #efefef;
             overflow: scroll;
+            margin-bottom: auto;
 
             @media (max-width: 500px) {
                 padding: 6px 6px 6px 12px;

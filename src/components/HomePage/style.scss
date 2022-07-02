@@ -1,14 +1,13 @@
-main#Home {
+main#HomePage {
     > div {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
 
-        > h1 {
-            margin: 300px auto 20px;
-        }
+        > h1, 
         > h2 {
-            margin: 0 0 30px;
+            margin-bottom: 20px;
         }
         > button {
             margin-bottom: 10px;

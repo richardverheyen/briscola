@@ -2,20 +2,26 @@ import { useContext, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { Auth } from "contexts";
-import Home from "components/Home";
-import Game from "components/Game";
+import HomePage from "components/HomePage";
+import GamePage from "components/GamePage";
 
 function Router() {
   const { auth, signIn } = useContext(Auth);
 
   useEffect(() => {
     signIn();
+
+    const appHeight = () => {
+      document.documentElement.style.setProperty("--doc-height", `${window.innerHeight}px`);
+    };
+    window.addEventListener("resize", appHeight);
+    appHeight();
   }, []);
 
   return auth ? (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/game/:id" element={<Game />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/game/:id" element={<GamePage />} />
     </Routes>
   ) : null;
 }
