@@ -29,17 +29,17 @@ function GamePage() {
             <p>{game.host} won these cards</p>
             <p>Total: {game[game.host].reduce((acc, card) => acc + cardToScore(card), 0)}</p>
             <ul>
-              {game[game.host]?.map((card, index) => {
-                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>;
-              })}
+              {game[game.host]?.map((card, index) => (
+                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>
+              ))}
             </ul>
 
             <p>{game.oppo} won these cards</p>
             <p>Total: {game[game.oppo].reduce((acc, card) => acc + cardToScore(card), 0)}</p>
             <ul>
-              {game[game.oppo]?.map((card, index) => {
-                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>;
-              })}
+              {game[game.oppo]?.map((card, index) => (
+                <li key={index}>{cardToScore(card)} - {cardToName(card)}</li>
+              ))}
             </ul>
           </div>
         ) : null}
