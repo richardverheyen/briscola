@@ -24,12 +24,10 @@
             transform-origin: 58px 100px 0px;
             width: 116px;
             height: 200px;
-            // transition: transform ease 200ms, box-shadow ease 200ms;
             border-radius: 10px;
             box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.02);
-            background: white;
-            background-repeat: no-repeat;
-            background-size: 1300px;
+            background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
+            border: 4px white solid;
             cursor: pointer;
         }
         &:last-child > div:hover {  
@@ -46,6 +44,8 @@
             transform: translate(-50%, 10px) rotateX(60deg) rotateZ(-95deg) ;
             transform-origin: 58px 190px 0px;
             background-image: url('../sprite.jpg');
+            background-size: 1300px;
+            background-repeat: no-repeat;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
         }
     }
