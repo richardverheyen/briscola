@@ -25,11 +25,9 @@ function GamePage() {
   return (
     <main id="GamePage">
       <div className="gutters">
-        {game?.gameState === "lobby" && isHost ? <QrCode /> : <Gui />}
-
         {game?.gameState === "scoreboard" ? (
           <>
-            <Button variant="outlined" onClick={() => setShowScoreboard(true)}>
+            <Button className="scoreboard-button" variant="outlined" onClick={() => setShowScoreboard(true)}>
               Show Scoreboard
             </Button>
             <Scoreboard
@@ -39,6 +37,8 @@ function GamePage() {
             />
           </>
         ) : null}
+
+        {game?.gameState === "lobby" && isHost ? <QrCode /> : <Gui />}
       </div>
     </main>
   );
