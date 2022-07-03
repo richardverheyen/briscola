@@ -26,15 +26,18 @@ exports.createGame = functions
 exports.joinGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
-    const oppoId = context.auth.uid;
 
     let gameRef = admin.firestore().collection("games").doc(data.id);
+    let privateRef = gameRef.collection("private").doc("data");
     const gameSnapshot = await gameRef.get();
     let game = gameSnapshot.data();
 
     if (game.gameState !== "lobby") {
       return;
     }
+
+    const oppoId = context.auth.uid;
+    const hostId = game.host;
 
     let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
     let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
@@ -51,6 +54,20 @@ exports.joinGame = functions
     oppoHand.push(deck.shift());
     assignTrumps();
 
+    // include the drawn cards for each player in the private record
+    let private = { 
+      originalDeck, 
+      deck,
+      [hostId]: {
+        drawn: [...hostHand],
+        won: []
+      },
+      [oppoId]: {
+        drawn: [...oppoHand],
+        won: []
+      },
+    };
+
     function assignTrumps() {
       let topCard = deck[0];
       lastCard = topCard;
@@ -61,13 +78,8 @@ exports.joinGame = functions
 
     let batch = admin.firestore().batch();
 
-    let privateRef = gameRef.collection("private").doc("data");
-    let hostHandRef = admin.firestore().collection("hands").doc(game.host);
+    let hostHandRef = admin.firestore().collection("hands").doc(hostId);
     let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
-
-    let private = { originalDeck, deck };
-    private[game.host] = [];
-    private[oppoId] = [];
 
     batch.set(privateRef, private);
     batch.set(hostHandRef, { cards: hostHand, gameId: data.id });
@@ -159,15 +171,18 @@ exports.playCard = functions
     drawCardValidations(game, hand, private, userId);
 
     // actions
-    hand.cards.push(private.deck.shift());
+    const drawnCard = private.deck.shift();
+    hand.cards.push(drawnCard);
+    private[userId].drawn.push(drawnCard);
+
     game.deckHeight = private.deck.length;
     game.currentPlayersTurn = otherPlayer;
 
     // sideEffects
     if (private.deck.length % 2 === 0) { // you are the second player to draw
       // put the last trick in the other player's winnings (because you're the loser of the last round)
-      private[otherPlayer].push(game.trick.shift());
-      private[otherPlayer].push(game.trick.shift());
+      private[otherPlayer].won.push(game.trick.shift());
+      private[otherPlayer].won.push(game.trick.shift());
       game.gameState = "play";
     }
 
