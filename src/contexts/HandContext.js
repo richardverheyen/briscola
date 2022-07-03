@@ -3,7 +3,9 @@ import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Auth, Game } from "contexts";
 
-export const Hand = createContext();
+export const Hand = createContext({
+  cards: []
+});
 
 function HandHooks() {
   const { auth } = useContext(Auth);

@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from 'react';
-
 import {  signInAnonymously } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { firebaseAuth } from 'utils/firebase';
@@ -21,7 +20,6 @@ function AuthHooks() {
   const [promptDisplayNameSent, setPromptDisplayNameSent] = useState(false);
   const [openUsernameModal, setOpenUsernameModal] = useState(false);
 
-
   if (error) {
     console.error("error logging in", {error});
   }
@@ -31,8 +29,7 @@ function AuthHooks() {
       setPromptDisplayNameSent(true);
       promptSetUsername(() => setOpenUsernameModal(true));
     }
-    console.log({auth});
-  }, [auth])
+  }, [auth]);
 
   const signIn = () => {
     signInAnonymously(firebaseAuth).then(result => {

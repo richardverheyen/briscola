@@ -1,36 +1,39 @@
-main#GamePage {
-    > div {
-        h2 {
-            margin-top: auto;
-            text-align: center;
+#QrCode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
 
-            @media (max-width: 500px) {
-                > br {
-                    display: none;
-                }
+    h2 {
+        margin-top: auto;
+        text-align: center;
+
+        @media (max-width: 500px) {
+            > br {
+                display: none;
             }
         }
+    }
 
-        canvas {
-            height: 300px!important;
-            width: 300px!important;
+    canvas {
+        height: 300px!important;
+        width: 300px!important;
 
-            @media (max-width: 500px) {
-                height: 240px!important;
-                width: 240px!important;
-            }
+        @media (max-width: 500px) {
+            height: 240px!important;
+            width: 240px!important;
         }
+    }
 
-        .url {
-            padding: 10px 10px 10px 20px;
-            background: #efefef;
-            overflow: scroll;
-            margin-bottom: auto;
+    .url {
+        padding: 10px 10px 10px 20px;
+        background: #efefef;
+        overflow: scroll;
+        margin-bottom: auto;
 
-            @media (max-width: 500px) {
-                padding: 6px 6px 6px 12px;
-                font-size: 10px;
-            }
+        @media (max-width: 500px) {
+            padding: 6px 6px 6px 12px;
+            font-size: 10px;
         }
     }
 }

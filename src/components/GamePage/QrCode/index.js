@@ -16,7 +16,7 @@ function QrCode() {
   }
 
   return (
-    <>
+    <div id="QrCode">
       <h2>Invite another player to the game<br/> by having them scan this QR Code</h2>
       <canvas id="canvas" />
       <p>or</p>
@@ -27,7 +27,7 @@ function QrCode() {
           &nbsp;<CopyToClipboard url={window.location.href}/>
         </span>
       </div>
-    </>
+    </div>
   );
 }
 

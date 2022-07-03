@@ -19,7 +19,7 @@ export const Game = createContext({
 function GameHooks() {
   const { auth } = useContext(Auth);
   let navigate = useNavigate();
-  const [isPlayer, setIsPlayer] = useState(false);
+  const [isHost, setIsHost] = useState(false);
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
@@ -53,14 +53,14 @@ function GameHooks() {
       setGame(gameData);
     } else if (!gameSnapshot && id) {
       setGame(undefined);
-      setIsPlayer(undefined);
+      setIsHost(undefined);
       navigate("/");
     }
   }, [gameSnapshot]);
 
   function initEgo(gameData) {
     if (auth.uid === gameData.host) {
-      setIsPlayer(true);
+      setIsHost(true);
     } else {
       joinGame({ id })
         .then((res) => {
@@ -76,7 +76,7 @@ function GameHooks() {
     id,
     setId,
     game,
-    isPlayer,
+    isHost,
     quitGame,
   };
 }
