@@ -3,6 +3,11 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
+// https://www.youtube.com/watch?v=KjyUsBpDWtE&ab_channel=TheNetNinja
+exports.updateUserDisplayName = functions.auth.user().onCreate((user) => {
+  console.log('user updated');
+});
+
 // https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
 // https://firebase.google.com/docs/functions/callable
 exports.createGame = functions

@@ -4,7 +4,7 @@ import "./style.scss";
 function HandView({ cards, selectCard }) {
   return (
     <ul className="HandView">
-      {cards.map((card, index) => {
+      {cards?.map((card, index) => {
         return (
           <li className="card-view" key={index}>
             <div 
