@@ -161,47 +161,56 @@ exports.drawCard = functions
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
     let privateRef = gameRef.collection("private").doc("data");
-    let handRef = admin.firestore().collection("hands").doc(userId);
+    let egoHandRef = admin.firestore().collection("hands").doc(userId);
     const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
       gameRef.get(),
       privateRef.get(),
-      handRef.get(),
+      egoHandRef.get(),
     ]);
     let game = Object.assign({}, gameSnapshot.data());
     let private = Object.assign({}, privateSnapshot.data());
-    let hand = Object.assign({}, handSnapshot.data());
+    let egoHand = Object.assign({}, handSnapshot.data());
     const otherPlayer = game.host === userId ? game.oppo : game.host;
 
-    drawCardValidations(game, hand, private, userId);
+    drawCardValidations(game, egoHand, private, userId);
+
+    let otherPlayerHandRef = admin.firestore().collection("hands").doc(otherPlayer);
+    const otherPlayerHandSnapshot = await otherPlayerHandRef.get();
+    let otherPlayerHand = Object.assign({}, otherPlayerHandSnapshot.data());
 
     // actions
-    const drawnCard = private.deck.shift();
-    hand.cards.push(drawnCard);
+    // draw card for ego
+    const drawnCard1 = private.deck.shift();
+    egoHand.cards.push(drawnCard1);
     private.drawn.push({
       player: userId,
-      card: drawnCard
+      card: drawnCard1
     });
 
-    game.deckHeight = private.deck.length;
-    game.currentPlayersTurn = otherPlayer;
+    // draw card for other player
+    const drawnCard2 = private.deck.shift();
+    otherPlayerHand.cards.push(drawnCard2); 
+    private.drawn.push({
+      player: otherPlayer,
+      card: drawnCard2
+    });
 
-    // sideEffects
-    if (private.deck.length % 2 === 0) { // you are the second player to draw
-      // put the last trick in the other player's winnings (because you're the loser of the last round)
-      private.won.push({
-        player: otherPlayer,
-        cards: [
-          game.trick.shift(),
-          game.trick.shift()
-        ]
-      });
-      game.gameState = "play";
-    }
+    // give trick cards to the ego player
+    private.won.push({
+      player: userId,
+      cards: [
+        game.trick.shift(),
+        game.trick.shift()
+      ]
+    });
+    game.gameState = "play";
+    game.deckHeight = private.deck.length;
 
     let batch = admin.firestore().batch();
     batch.update(gameRef, game);
     batch.update(privateRef, private);
-    batch.update(handRef, hand);
+    batch.update(egoHandRef, egoHand);
+    batch.update(otherPlayerHandRef, otherPlayerHand);
 
     batch.commit();
   });
@@ -224,7 +233,7 @@ exports.takeCards = functions
     let private = Object.assign({}, privateSnapshot.data());
     let hand = Object.assign({}, handSnapshot.data());
 
-    takeCardsValidations(game, hand, private, userId);
+    takeCardsValidations(game, hand, userId);
 
     // actions
     game.gameState = "play";
@@ -268,14 +277,14 @@ function playCardValidations(game, hand, card, userId) {
 }
 
 function drawCardValidations(game, hand, private, userId) {
-  takeCardsValidations(game, hand, private, userId);
+  takeCardsValidations(game, hand, userId);
 
   if (private.deck.length === 0) {
     throw "There are no cards to take";
   }
 }
 
-function takeCardsValidations(game, hand, private, userId) {
+function takeCardsValidations(game, hand, userId) {
   if (game.gameState !== "draw") {
     throw "It's not the time to draw a card";
   }

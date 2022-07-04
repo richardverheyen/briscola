@@ -38,7 +38,8 @@ function GamePage() {
           </>
         ) : null}
 
-        {game?.gameState === "lobby" && isHost ? <QrCode /> : <Gui />}
+        {game?.gameState === "lobby" && isHost ? <QrCode /> : null}
+        {game?.gameState !== "lobby" ? <Gui /> : null}
       </div>
     </main>
   );
