@@ -3,18 +3,16 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-// https://www.youtube.com/watch?v=KjyUsBpDWtE&ab_channel=TheNetNinja
-exports.updateUserDisplayName = functions.auth.user().onCreate((user) => {
-  console.log('user updated');
-});
-
 // https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
 // https://firebase.google.com/docs/functions/callable
 exports.createGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
+    const hostUserRecord = await admin.auth().getUser(context.auth.uid);
+
     const { id } = await admin.firestore().collection("games").add({
       host: context.auth.uid,
+      hostDisplayName: hostUserRecord.displayName,
       gameState: "lobby",
     });
 
@@ -26,11 +24,14 @@ exports.createGame = functions
 exports.joinGame = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
-
     let gameRef = admin.firestore().collection("games").doc(data.id);
     let privateRef = gameRef.collection("private").doc("data");
-    const gameSnapshot = await gameRef.get();
+    const [gameSnapshot, oppoUserRecord] = await Promise.all([
+      gameRef.get(),
+      admin.auth().getUser(context.auth.uid),
+    ]);
     let game = gameSnapshot.data();
+    game.oppoDisplayName = oppoUserRecord.displayName;
 
     if (game.gameState !== "lobby") {
       return;
@@ -43,15 +44,15 @@ exports.joinGame = functions
     let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
     let hands = {
       [hostId]: [],
-      [oppoId]: []
-    }
+      [oppoId]: [],
+    };
     let lastCard;
     let trumps;
-    let private = { 
-      originalDeck, 
+    let private = {
+      originalDeck,
       deck,
       drawn: [],
-      won: []
+      won: [],
     };
 
     function dealCard(playerId) {
@@ -59,10 +60,10 @@ exports.joinGame = functions
       hands[playerId].push(card);
       private.drawn.push({
         player: playerId,
-        card
-      })
+        card,
+      });
     }
-    
+
     function assignTrumps() {
       let topCard = deck[0];
       lastCard = topCard;
@@ -78,7 +79,6 @@ exports.joinGame = functions
     dealCard(hostId);
     dealCard(oppoId);
     assignTrumps();
-
 
     let batch = admin.firestore().batch();
 
@@ -108,15 +108,12 @@ exports.playCard = functions
     const userId = context.auth.uid;
 
     let gameRef = admin.firestore().collection("games").doc(gameId);
-    let privateRef = gameRef.collection("private").doc("data");
     let handRef = admin.firestore().collection("hands").doc(userId);
-    const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
+    const [gameSnapshot, handSnapshot] = await Promise.all([
       gameRef.get(),
-      privateRef.get(),
       handRef.get(),
     ]);
     let game = Object.assign({}, gameSnapshot.data());
-    let private = Object.assign({}, privateSnapshot.data());
     let hand = Object.assign({}, handSnapshot.data());
 
     playCardValidations(game, hand, card, userId);
@@ -132,7 +129,6 @@ exports.playCard = functions
 
     if (game.trick.length === 1) {
       game.currentPlayersTurn = otherPlayer;
-
     } else if (game.trick.length === 2) {
       if (trickWon(game)) {
         game.currentPlayersTurn = userId;
@@ -141,7 +137,6 @@ exports.playCard = functions
       }
 
       game.gameState = "draw";
-
     } else {
       throw "played a card but new game.trick.length wasn't 1 or 2";
     }
@@ -174,7 +169,10 @@ exports.drawCard = functions
 
     drawCardValidations(game, egoHand, private, userId);
 
-    let otherPlayerHandRef = admin.firestore().collection("hands").doc(otherPlayer);
+    let otherPlayerHandRef = admin
+      .firestore()
+      .collection("hands")
+      .doc(otherPlayer);
     const otherPlayerHandSnapshot = await otherPlayerHandRef.get();
     let otherPlayerHand = Object.assign({}, otherPlayerHandSnapshot.data());
 
@@ -184,24 +182,21 @@ exports.drawCard = functions
     egoHand.cards.push(drawnCard1);
     private.drawn.push({
       player: userId,
-      card: drawnCard1
+      card: drawnCard1,
     });
 
     // draw card for other player
     const drawnCard2 = private.deck.shift();
-    otherPlayerHand.cards.push(drawnCard2); 
+    otherPlayerHand.cards.push(drawnCard2);
     private.drawn.push({
       player: otherPlayer,
-      card: drawnCard2
+      card: drawnCard2,
     });
 
     // give trick cards to the ego player
     private.won.push({
       player: userId,
-      cards: [
-        game.trick.shift(),
-        game.trick.shift()
-      ]
+      cards: [game.trick.shift(), game.trick.shift()],
     });
     game.gameState = "play";
     game.deckHeight = private.deck.length;
@@ -239,10 +234,7 @@ exports.takeCards = functions
     game.gameState = "play";
     private.won.push({
       player: userId,
-      cards: [
-        game.trick.shift(),
-        game.trick.shift()
-      ]
+      cards: [game.trick.shift(), game.trick.shift()],
     });
 
     if (hand.cards.length === 0 && private.deck.length === 0) {
@@ -258,6 +250,33 @@ exports.takeCards = functions
     batch.update(privateRef, private);
     batch.update(handRef, hand);
 
+    batch.commit();
+  });
+
+exports.updateUsernameInGame = functions
+  .region("australia-southeast1")
+  .https.onCall(async (data, context) => {
+
+    let gameRef = admin.firestore().collection("games").doc(data.id);
+    const [gameSnapshot, egoUserRecord] = await Promise.all([
+      gameRef.get(),
+      admin.auth().getUser(context.auth.uid),
+    ]);
+    let game = gameSnapshot.data();
+    let egoUserDisplayName = egoUserRecord.displayName;
+
+    const egoUserIsHost = game.host === context.auth.uid;
+    if (egoUserIsHost) {
+      game.hostDisplayName = egoUserDisplayName;
+    }
+
+    const egoUserIsOppo = game.oppo === context.auth.uid;
+    if (egoUserIsOppo) {
+      game.oppoDisplayName = egoUserDisplayName;
+    }
+
+    let batch = admin.firestore().batch();
+    batch.update(gameRef, game);
     batch.commit();
   });
 
@@ -321,7 +340,7 @@ function cardToPower(num) {
   } else if (powerScore === 2) {
     powerScore = 10;
   }
-  
+
   return powerScore;
 }
 
@@ -336,12 +355,11 @@ function trickWon(game) {
   if (bottomCardSuit === trumps && topCardSuit !== trumps) {
     console.log("you lost! They played trumps and you didn't");
     return false;
-
   } else if (bottomCardSuit !== trumps && topCardSuit === trumps) {
     console.log("you won! You played trumps and they didn't");
-    return true; 
+    return true;
   }
-  
+
   if (bottomCardSuit !== topCardSuit) {
     console.log("you lost! you couldn't follow suit");
     return false;
