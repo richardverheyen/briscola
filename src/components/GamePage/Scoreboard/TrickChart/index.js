@@ -5,6 +5,7 @@ import {
   cardToName,
   winningCardFromArray,
   cardToScore,
+  idToName,
 } from "utils/helpers";
 import { Chart } from "react-google-charts";
 
@@ -19,9 +20,11 @@ export default function TrickChart({ game }) {
     );
 
     let toolTipContent =
-      '<p class="Scoreboard-title">Trick ' +
+      '<p class="Scoreboard-title">' +
+      idToName(wonArray[index]?.player, game) + 
+      ' won trick ' +
       (index + 1) +
-      " won by <br/> " +
+      " with <br/> " +
       cardToName(winningCardFromArray(wonArray[index]?.cards, game)) +
       " (+" +
       (cardToScore(wonArray[index]?.cards[0]) +

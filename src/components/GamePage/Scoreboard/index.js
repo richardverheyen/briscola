@@ -20,9 +20,9 @@ function Scoreboard({ game, showScoreboard, handleClose }) {
     if (hostScore === oppoScore) {
       return "It was a tie! 60 - 60";
     } else if (hostScore > oppoScore) {
-      return `${game.host} won with a score of ${hostScore} - ${oppoScore}`;
+      return `${game.hostDisplayName || "Host"} won with a score of ${hostScore} - ${oppoScore}`;
     } else {
-      return `${game.oppo} won with a score of ${oppoScore} - ${hostScore}`;
+      return `${game.oppoDisplayName || "Opponent"} won with a score of ${oppoScore} - ${hostScore}`;
     }
   };
 

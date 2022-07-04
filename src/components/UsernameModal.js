@@ -24,7 +24,7 @@ export default function UsernameModal() {
 
     try {
       await updateProfile(auth, {
-        displayName: document.getElementById('given-name').value,
+        displayName: document.getElementById('nickname').value,
       })
       if (game) {
         await updateUsernameInGame({ id })
@@ -53,9 +53,9 @@ export default function UsernameModal() {
           <TextField
             autoFocus
             margin="dense"
-            id="given-name"
-            label="Your given name"
-            type="given-name"
+            id="nickname"
+            label="Your alias"
+            type="nickname"
             fullWidth
             variant="standard"
             required
