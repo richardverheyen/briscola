@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
-import { cardToScore } from "utils/helpers";
-import Button from "@mui/material/Button";
+import { wonArrToTotalScore } from "utils/helpers";
 
 export function yourTurnToDraw(game, userId) {
   if (game.gameState === "draw" && game.currentPlayersTurn === userId) {
@@ -16,23 +15,25 @@ export function scoreboardShown(game, userId) {
   if (game.gameState === "scoreboard") {
     toast("It's your turn to draw");
 
-    if (game.currentPlayersTurn === userId) {
+    if (wonArrToTotalScore(game.won, userId) > 60) {
       toast(
         "You won with a score of " +
-          game[userId].reduce((acc, card) => acc + cardToScore(card), 0),
+        wonArrToTotalScore(game.won, userId),
         {
           icon: "🎉",
           duration: 6000,
         }
       );
-    } else {
+    } else if (wonArrToTotalScore(game.won, userId) < 60) {
       toast(
         "You lost with a score of " +
-          game[userId].reduce((acc, card) => acc + cardToScore(card), 0),
+          wonArrToTotalScore(game.won, userId),
         {
           icon: "👏",
         }
       );
+    } else {
+      toast("The game was a tie! 60 - 60");
     }
   }
 }

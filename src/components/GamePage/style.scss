@@ -3,5 +3,9 @@ main#GamePage {
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        .scoreboard-button {
+            margin-top: 20px;
+        }
     }
 }

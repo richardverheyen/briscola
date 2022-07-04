@@ -41,40 +41,44 @@ exports.joinGame = functions
 
     let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
     let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
-    let hostHand = [];
-    let oppoHand = [];
+    let hands = {
+      [hostId]: [],
+      [oppoId]: []
+    }
     let lastCard;
     let trumps;
-
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    hostHand.push(deck.shift());
-    oppoHand.push(deck.shift());
-    assignTrumps();
-
-    // include the drawn cards for each player in the private record
     let private = { 
       originalDeck, 
       deck,
-      [hostId]: {
-        drawn: [...hostHand],
-        won: []
-      },
-      [oppoId]: {
-        drawn: [...oppoHand],
-        won: []
-      },
+      drawn: [],
+      won: []
     };
 
+    function dealCard(playerId) {
+      let card = deck.shift();
+      hands[playerId].push(card);
+      private.drawn.push({
+        player: playerId,
+        card
+      })
+    }
+    
     function assignTrumps() {
       let topCard = deck[0];
       lastCard = topCard;
       trumps = cardToSuit(topCard);
 
-      deck.push(deck.shift()); // move the first deck card to the end of the deck array
+      deck.push(deck.shift()); // move the topcard to the end of the deck array so it becomes the lastCard
     }
+
+    dealCard(hostId);
+    dealCard(oppoId);
+    dealCard(hostId);
+    dealCard(oppoId);
+    dealCard(hostId);
+    dealCard(oppoId);
+    assignTrumps();
+
 
     let batch = admin.firestore().batch();
 
@@ -82,8 +86,8 @@ exports.joinGame = functions
     let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
 
     batch.set(privateRef, private);
-    batch.set(hostHandRef, { cards: hostHand, gameId: data.id });
-    batch.set(oppoHandRef, { cards: oppoHand, gameId: data.id });
+    batch.set(hostHandRef, { cards: hands[hostId], gameId: data.id });
+    batch.set(oppoHandRef, { cards: hands[oppoId], gameId: data.id });
     batch.update(gameRef, {
       oppo: oppoId,
       currentPlayersTurn: oppoId,
@@ -149,7 +153,7 @@ exports.playCard = functions
     batch.commit();
   });
 
-  exports.drawCard = functions
+exports.drawCard = functions
   .region("australia-southeast1")
   .https.onCall(async (data, context) => {
     const { gameId } = data;
@@ -173,7 +177,10 @@ exports.playCard = functions
     // actions
     const drawnCard = private.deck.shift();
     hand.cards.push(drawnCard);
-    private[userId].drawn.push(drawnCard);
+    private.drawn.push({
+      player: userId,
+      card: drawnCard
+    });
 
     game.deckHeight = private.deck.length;
     game.currentPlayersTurn = otherPlayer;
@@ -181,8 +188,13 @@ exports.playCard = functions
     // sideEffects
     if (private.deck.length % 2 === 0) { // you are the second player to draw
       // put the last trick in the other player's winnings (because you're the loser of the last round)
-      private[otherPlayer].won.push(game.trick.shift());
-      private[otherPlayer].won.push(game.trick.shift());
+      private.won.push({
+        player: otherPlayer,
+        cards: [
+          game.trick.shift(),
+          game.trick.shift()
+        ]
+      });
       game.gameState = "play";
     }
 
@@ -211,19 +223,25 @@ exports.takeCards = functions
     let game = Object.assign({}, gameSnapshot.data());
     let private = Object.assign({}, privateSnapshot.data());
     let hand = Object.assign({}, handSnapshot.data());
-    const otherPlayer = game.host === userId ? game.oppo : game.host;
 
     takeCardsValidations(game, hand, private, userId);
 
     // actions
     game.gameState = "play";
-    private[userId].push(game.trick.shift());
-    private[userId].push(game.trick.shift());
+    private.won.push({
+      player: userId,
+      cards: [
+        game.trick.shift(),
+        game.trick.shift()
+      ]
+    });
 
     if (hand.cards.length === 0 && private.deck.length === 0) {
       game.gameState = "scoreboard";
-      game[userId] = private[userId];
-      game[otherPlayer] = private[otherPlayer];
+
+      // make the won and drawn lists available to the scoreboard
+      game.won = private.won;
+      game.drawn = private.drawn;
     }
 
     let batch = admin.firestore().batch();

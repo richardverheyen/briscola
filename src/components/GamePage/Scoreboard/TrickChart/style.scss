@@ -1,0 +1,23 @@
+#TrickChart {
+    overflow: hidden;
+
+    svg {
+        transform: scale(1.35) translateX(8px);
+        @media (max-width: 340px) {
+            transform: scale(1.30) translateX(8px);
+        }
+    }
+}
+.Scoreboard-title {
+    padding: 4px;
+    margin: 0;
+}
+
+.Scoreboard-card {
+    display: inline-block;
+    width: calc(116px / 1.5);
+    height: calc(200px / 1.5);
+    background-image: url('../../Gui/sprite.jpg');
+    background-repeat: no-repeat;
+    background-size: calc(1300px / 1.5);
+}
