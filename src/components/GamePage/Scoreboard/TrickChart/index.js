@@ -1,8 +1,14 @@
 import "./style.scss";
-import { wonArrToTotalScore, spritePosition, cardToName, winningCardFromArray } from "utils/helpers";
+import {
+  wonArrToTotalScore,
+  spritePosition,
+  cardToName,
+  winningCardFromArray,
+  cardToScore,
+} from "utils/helpers";
 import { Chart } from "react-google-charts";
 
-export default function TrickChart({game}) {
+export default function TrickChart({ game }) {
   function wonCardsToTrickColumn(index) {
     let wonArray = game.won;
     let wonByHost = wonArray.filter(
@@ -12,35 +18,26 @@ export default function TrickChart({game}) {
       (trick, i) => i <= index && trick.player === game.oppo
     );
 
-    let wonByHostInThisTrick = `<p class="Scoreboard-title">Trick ${
-      index + 1
-    }, won by <br/> ${cardToName(
-      winningCardFromArray(wonArray[index]?.cards, game)
-    )}</p><span class="Scoreboard-card" style="background-position: ${spritePosition(
-      wonArray[index]?.cards[0],
-      0.5
-    )}"></span><span class="Scoreboard-card" style="background-position: ${spritePosition(
-      wonArray[index]?.cards[1],
-      0.5
-    )}"></span>`;
+    let toolTipContent =
+      '<p class="Scoreboard-title">Trick ' +
+      (index + 1) +
+      " won by <br/> " +
+      cardToName(winningCardFromArray(wonArray[index]?.cards, game)) +
+      " (+" +
+      (cardToScore(wonArray[index]?.cards[0]) +
+        cardToScore(wonArray[index]?.cards[1])) +
+      ')</p><span class="Scoreboard-card" style="background-position: ' +
+      spritePosition(wonArray[index]?.cards[0], 1 / 1.5) +
+      '"></span><span class="Scoreboard-card" style="background-position: ' +
+      spritePosition(wonArray[index]?.cards[1], 1 / 1.5) +
+      '"></span>';
 
-    let wonByOppoInThisTrick = `<p class="Scoreboard-title">Trick ${
-      index + 1
-    }, won by <br/> ${cardToName(
-      winningCardFromArray(wonArray[index]?.cards, game)
-    )}</p><span class="Scoreboard-card" style="background-position: ${spritePosition(
-      wonArray[index]?.cards[0],
-      0.5
-    )}"></span><span class="Scoreboard-card" style="background-position: ${spritePosition(
-      wonArray[index]?.cards[1],
-      0.5
-    )}"></span>`;
     return [
       index + 1,
       wonArrToTotalScore(wonByHost, game.host),
-      wonByHostInThisTrick,
+      toolTipContent,
       wonArrToTotalScore(wonByOppo, game.oppo),
-      wonByOppoInThisTrick,
+      toolTipContent,
     ];
   }
 
@@ -56,18 +53,17 @@ export default function TrickChart({game}) {
   ];
 
   return (
-    <Chart
-      chartType="ScatterChart"
-      width="100%"
-      height="300px"
-      data={data1}
-      options={{
-        chart: {
-          title: "Score Change over time",
-          subtitle: "as points per turn",
-        },
-        tooltip: { isHtml: true, trigger: "visible" },
-      }}
-    />
+    <div id="TrickChart">
+      <Chart
+        chartType="ScatterChart"
+        width="100%"
+        height="400px"
+        data={data1}
+        options={{
+          legend: "none",
+          tooltip: { isHtml: true, trigger: "visible" },
+        }}
+      />
+    </div>
   );
 }
