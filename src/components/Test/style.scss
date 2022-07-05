@@ -1,0 +1,107 @@
+#Test {
+    background-color: #efefef;
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        ul {
+            position: relative;
+            padding: 0;
+            width: 200px;
+            height: 200px;
+            // background-color: red;
+            perspective: 800px;
+            // box-shadow: 0px 2px 10px rgba(0, 0, 0, 1);
+            filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.2));
+
+            > .card {
+                list-style: none;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: calc( 1 * 116px);
+                height: calc( 1 * 200px);
+                border-radius: 10px;
+                // box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.05);
+                // background-color: white;
+                cursor: pointer;
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    width: calc( 1 * 116px);
+                    height: calc( 1 * 200px);
+                    border-radius: 10px;
+                    box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.05);
+                    background-color: white;
+                    background: center/100px 30px no-repeat url("./floatplane-logo.png"), center/18px repeat url("./floatplane.png"), white;
+                    border: 4px white solid;
+                }
+
+            }
+
+
+            &.active .card:before {
+                animation-duration: 500ms;
+                animation-name: slide;
+                animation-timing-function: linear;
+                animation-iteration-count: 1;
+                animation-direction: normal;
+                animation-fill-mode: forwards;
+                animation-delay: inherit;
+
+                @keyframes slide {
+                    0% {
+                        transform: translateY(0px);
+                    }
+                    50% {
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-300px);
+                        opacity: 0;
+                    }
+                }
+            }
+        }
+
+        
+
+        // > .card {
+        //     margin-top: 20px;
+        //     width: 116px;
+        //     height: 200px;
+        //     border-radius: 10px;
+        //     box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.02);
+        //     background-color: white;
+        //     cursor: pointer;
+
+        //     &.animation {
+
+        //         &.active {
+        //             animation-duration: 500ms;
+        //             animation-name: slide;
+        //             animation-iteration-count: 1;
+        //             animation-direction: alternate;
+        //             animation-fill-mode: forwards;
+        //         }
+
+        //         @keyframes slide {
+        //             0% {
+        //                 transform: translateX(0px);
+        //             }
+        //             50% {
+        //                 opacity: 1;
+        //             }
+        //             100% {
+        //                 transform: translateX(100px);
+        //                 opacity: 0;
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}

@@ -5,6 +5,7 @@ import { Hand, Auth, Game } from "contexts";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 import { playCardError, takeCardError } from "utils/toast";
+import Test from "components/Test";
 
 import HandView from "./HandView";
 import DeckView from "./DeckView";
@@ -53,40 +54,43 @@ function Gui() {
     if (game.currentPlayersTurn === auth.uid) {
       return "your";
     } else if (isHost && game?.oppoDisplayName) {
-      return game?.oppoDisplayName + '\'s';
+      return game?.oppoDisplayName + "'s";
     } else if (!isHost && game?.hostDisplayName) {
-      return game?.hostDisplayName + '\'s';
+      return game?.hostDisplayName + "'s";
     } else {
       return "their";
     }
   }
 
   return (
-    <div className="Gui">
-      {game.gameState !== "scoreboard" ? (
-        <h2>
-          It's <b>{playerWhoseTurnItIs()}</b> turn to <b>{game.gameState}</b>
-        </h2>
-      ) : (
-        <h2>Game over</h2>
-      )}
+    <>
+      <div className="Gui">
+        {game.gameState !== "scoreboard" ? (
+          <h2>
+            It's <b>{playerWhoseTurnItIs()}</b> turn to <b>{game.gameState}</b>
+          </h2>
+        ) : (
+          <h2>Game over</h2>
+        )}
 
-      <div className="center">
-        <TrickView game={game} takeCards={handleTakeCards} />
+        <div className="center">
+          <TrickView game={game} takeCards={handleTakeCards} />
 
-        {game.deckHeight > 0 ? (
-          <DeckView
-            auth={auth}
-            game={game}
-            gameId={gameId}
-            deckHeight={game.deckHeight}
-            lastCard={game.lastCard}
-          />
-        ) : null}
+          {game.deckHeight > 0 ? (
+            <DeckView
+              auth={auth}
+              game={game}
+              gameId={gameId}
+              deckHeight={game.deckHeight}
+              lastCard={game.lastCard}
+            />
+          ) : null}
+        </div>
+
+        <HandView cards={cards} selectCard={handleSelectCard} />
       </div>
-
-      <HandView cards={cards} selectCard={handleSelectCard} />
-    </div>
+      <Test />
+    </>
   );
 }
 
