@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Auth } from "contexts";
+import { Auth, Game } from "contexts";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -10,27 +10,33 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { updateProfile } from "firebase/auth";
 import { greetUser } from "utils/toast";
 import toast from 'react-hot-toast';
+import { httpsCallable } from "firebase/functions";
+import { functions } from "utils/firebase";
 
 export default function UsernameModal() {
+  const updateUsernameInGame = httpsCallable(functions, "updateUsernameInGame");
   const { auth, user, openUsernameModal, setOpenUsernameModal } =
     useContext(Auth);
+  const { id, game } = useContext(Game);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    updateProfile(auth, {
-      displayName: document.getElementById('given-name').value,
-    })
-      .then(
-        function () {
-          greetUser(auth);
-        },
-        function (error) {
-          toast.error("For some reason, that didn't work. Sorry!");
-        }
-      )
-      .finally(() => {
-        setOpenUsernameModal(false);
-      });
+
+    try {
+      await updateProfile(auth, {
+        displayName: document.getElementById('nickname').value,
+      })
+      if (game) {
+        await updateUsernameInGame({ id })
+      }
+      greetUser(auth);
+
+    } catch (error) {
+      toast.error("For some reason, that didn't work. Sorry!");
+    } finally {
+      setOpenUsernameModal(false);
+    }
+       
   }
 
   return (
@@ -47,9 +53,9 @@ export default function UsernameModal() {
           <TextField
             autoFocus
             margin="dense"
-            id="given-name"
-            label="Your given name"
-            type="given-name"
+            id="nickname"
+            label="Your alias"
+            type="nickname"
             fullWidth
             variant="standard"
             required

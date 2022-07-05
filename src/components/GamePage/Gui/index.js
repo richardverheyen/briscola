@@ -11,7 +11,7 @@ import DeckView from "./DeckView";
 import TrickView from "./TrickView";
 
 function Gui() {
-  let { game, id: gameId } = useContext(Game);
+  let { game, isHost, id: gameId } = useContext(Game);
   let { auth } = useContext(Auth);
   let handContext = useContext(Hand);
   let cards = handContext?.cards;
@@ -49,14 +49,27 @@ function Gui() {
     return null;
   }
 
+  function playerWhoseTurnItIs() {
+    if (game.currentPlayersTurn === auth.uid) {
+      return "your";
+    } else if (isHost && game?.oppoDisplayName) {
+      return game?.oppoDisplayName + '\'s';
+    } else if (!isHost && game?.hostDisplayName) {
+      return game?.hostDisplayName + '\'s';
+    } else {
+      return "their";
+    }
+  }
+
   return (
     <div className="Gui">
       {game.gameState !== "scoreboard" ? (
         <h2>
-          It's <b>{game.currentPlayersTurn === auth.uid ? "your" : "their"}</b>{" "}
-          turn to <b>{game.gameState}</b>
+          It's <b>{playerWhoseTurnItIs()}</b> turn to <b>{game.gameState}</b>
         </h2>
-      ) : null}
+      ) : (
+        <h2>Game over</h2>
+      )}
 
       <div className="center">
         <TrickView game={game} takeCards={handleTakeCards} />

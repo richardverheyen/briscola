@@ -139,3 +139,11 @@ function trickWon(bottomCard, topCard, game) {
     return true;
   }
 }
+
+export function idToName(id, game) {
+  if (id === game.host ) {
+    return game.hostDisplayName || "Host";
+  } else {
+    return game.oppoDisplayName || "Opponent";
+  }
+}
