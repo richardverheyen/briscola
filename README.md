@@ -1,5 +1,5 @@
 # Briscola by Richard Verheyen
-
+Live test environment: https://briscola-fp.web.app/
 ## Available Scripts
 
 In the project directory, you can run:
