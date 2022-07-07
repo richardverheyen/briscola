@@ -18,7 +18,7 @@ function GamePage() {
     setId(id);
   }, []);
 
-  if (!game) {
+  if (!game || !id) {
     return null;
   }
 

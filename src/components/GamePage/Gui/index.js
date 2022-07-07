@@ -20,6 +20,9 @@ function Gui() {
   const takeCards = httpsCallable(functions, "takeCards");
 
   const handleSelectCard = (card) => {
+    if (cards.length <= 2 && game.deckHeight !== 0) {
+      return;
+    }
     playCard({ gameId, card })
       .then((res) => {
         console.log("success!", { res });
@@ -45,10 +48,7 @@ function Gui() {
       });
   };
 
-  if (!game || !cards) {
-    return null;
-  }
-
+  
   function playerWhoseTurnItIs() {
     if (game.currentPlayersTurn === auth.uid) {
       return "your";
@@ -59,6 +59,9 @@ function Gui() {
     } else {
       return "their";
     }
+  }
+  if (!game || !cards || !auth) {
+    return null;
   }
 
   return (
@@ -74,15 +77,13 @@ function Gui() {
       <div className="center">
         <TrickView game={game} takeCards={handleTakeCards} />
 
-        {game.deckHeight > 0 ? (
-          <DeckView
-            auth={auth}
-            game={game}
-            gameId={gameId}
-            deckHeight={game.deckHeight}
-            lastCard={game.lastCard}
-          />
-        ) : null}
+        <DeckView
+          auth={auth}
+          game={game}
+          gameId={gameId}
+          deckHeight={game.deckHeight}
+          lastCard={game.lastCard}
+        />
       </div>
 
       <HandView cards={cards} selectCard={handleSelectCard} />
