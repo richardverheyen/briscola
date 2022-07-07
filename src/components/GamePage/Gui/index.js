@@ -4,7 +4,7 @@ import { Hand, Auth, Game } from "contexts";
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
-import { playCardError, takeCardError } from "utils/toast";
+import { takeCardError } from "utils/toast";
 
 import HandView from "./HandView";
 import DeckView from "./DeckView";
@@ -16,19 +16,7 @@ function Gui() {
   let handContext = useContext(Hand);
   let cards = handContext?.cards;
 
-  const playCard = httpsCallable(functions, "playCard");
   const takeCards = httpsCallable(functions, "takeCards");
-
-  const handleSelectCard = (card) => {
-    playCard({ gameId, card })
-      .then((res) => {
-        console.log("success!", { res });
-      })
-      .catch((err) => {
-        playCardError(game);
-        console.error("Play Card Failed", { err });
-      });
-  };
 
   const handleTakeCards = () => {
     if (game.deckHeight > 0) {
@@ -45,10 +33,7 @@ function Gui() {
       });
   };
 
-  if (!game || !cards) {
-    return null;
-  }
-
+  
   function playerWhoseTurnItIs() {
     if (game.currentPlayersTurn === auth.uid) {
       return "your";
@@ -59,6 +44,9 @@ function Gui() {
     } else {
       return "their";
     }
+  }
+  if (!game || !cards || !auth) {
+    return null;
   }
 
   return (
@@ -74,18 +62,16 @@ function Gui() {
       <div className="center">
         <TrickView game={game} takeCards={handleTakeCards} />
 
-        {game.deckHeight > 0 ? (
-          <DeckView
-            auth={auth}
-            game={game}
-            gameId={gameId}
-            deckHeight={game.deckHeight}
-            lastCard={game.lastCard}
-          />
-        ) : null}
+        <DeckView
+          auth={auth}
+          game={game}
+          gameId={gameId}
+          deckHeight={game.deckHeight}
+          lastCard={game.lastCard}
+        />
       </div>
 
-      <HandView cards={cards} selectCard={handleSelectCard} />
+      <HandView game={game} gameId={gameId} cards={cards} />
     </div>
   );
 }

@@ -12,7 +12,7 @@ exports.createGame = functions
 
     const { id } = await admin.firestore().collection("games").add({
       host: context.auth.uid,
-      hostDisplayName: hostUserRecord.displayName,
+      hostDisplayName: hostUserRecord.displayName || "host",
       gameState: "lobby",
     });
 
@@ -31,7 +31,7 @@ exports.joinGame = functions
       admin.auth().getUser(context.auth.uid),
     ]);
     let game = gameSnapshot.data();
-    game.oppoDisplayName = oppoUserRecord.displayName;
+    game.oppoDisplayName = oppoUserRecord.displayName || "Opponent";
 
     if (game.gameState !== "lobby") {
       return;

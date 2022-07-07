@@ -1,81 +1,136 @@
 .DeckView {
-    transform-origin: right;
-    width: 280px;
+    position: relative;
+    padding: 0;
+    width: 210px;
+    max-width: 18vw;
     height: 150px;
-    padding: 0 60px 60px 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-start;
-    align-items: flex-end;
+    perspective: 800px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: all ease 200ms;
 
-    &:not(.active) {
-        pointer-events: none;
+    @media (max-width: 450px) {
+        transform: scale(0.95);
     }
-
-    @media (max-width: 500px) {
-        margin: 0 -20px -80px 0;
-        transform: scale(0.8);
+    @media (max-width: 400px) {
+        transform: scale(0.92);
+    }
+    @media (max-width: 380px) {
+        transform: scale(0.90);
+    }
+    @media (max-width: 360px) {
+        transform: scale(0.88);
     }
 
     > li {
-        position: relative;
-        width: 40px;
-        height: 1px;
         list-style: none;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 124px;
+        height: 208px;
+        border-radius: 10px;
+        // box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: ease 500ms all;
 
-        > div {
+        &:before {
+            content: "";
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translate3d(-50%, 100px, 0) rotateX(50deg) rotateZ(-3deg);
-            transform-origin: 58px 100px 0px;
-            width: 116px;
-            height: 200px;
+            width: 124px;
+            height: 208px;
+            box-sizing: border-box;
             border-radius: 10px;
-            box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.02);
+            box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.05);
+            background-color: white;
             background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
             border: 4px white solid;
-            transition: ease 300ms all;
         }
-        
-        &:first-child > div {
-            transform: translate(-50%, 10px) rotateX(50deg) rotateZ(-95deg);
-            transform-origin: 58px 190px 0px;
+
+        &:first-child:before {
             background-image: url('../sprite.jpg');
-            background-size: 1300px;
             background-repeat: no-repeat;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
-        }
-
-        &:last-child > div {
-            cursor: pointer;
-
-            &:hover {  
-                @media (min-width: 801px) {
-                    filter: contrast(0.96);
-                    transform: translate3d(-50%, 105px, 0px) rotateX(52deg) rotateY(1deg) rotateZ(-3deg);
-                    box-shadow: -1px 10px 1px rgba(0, 0, 0, 0.08);
-                }
+            background-size: 1300px;
+            background-position: inherit;
+            box-shadow: none;
+            transform: translateX(-100px) rotateZ(-90deg);
+           
+            @media (max-width: 420px) {
+                transform:  translateX(-90px) rotateZ(-90deg);
             }
         }
+    }
+    
+    
+    &.animate li:nth-last-child(1):before,
+    &.animate li:nth-last-child(2):before {
+        animation-duration: 1s;
+        animation-timing-function: ease;
+        animation-iteration-count: 1;
+        animation-direction: normal;
+        animation-fill-mode: forwards;
+        animation-delay: inherit;
+    }
+    &.animate li:nth-last-child(1):before {
+        animation-name: slideBack;
+    }
+    &.animate li:nth-last-child(2):before {
+        animation-name: slideForwards;
+    }
+    &.animate li:first-child:before {
+        animation-name: slideLast;
+    }
+    &.animate.reverse li:nth-last-child(1):before {
+        animation-name: slideForwards;
+    }
+    &.animate.reverse li:nth-last-child(2):before {
+        animation-name: slideBack;
+    }
+    &.animate.reverse li:first-child:before {
+        animation-name: slideLastReverse;
+    }
+    
+    @keyframes slideBack {
+        0% {
+            transform: translateY(0px);
+        }
+        70% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(250px);
+            opacity: 0;
+        }
+    }
 
-        &:last-child > div.clicked {
-            animation: pick ease 1s forwards;
-            cursor: default;
+    @keyframes slideForwards {
+        0% {
+            transform: translateY(0px);
+        }
+        80% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-250px);
+            opacity: 0;
+        }
+    }
 
-            @keyframes pick {
-                50% {
-                    opacity: 1;
-                }
-                100% {
-                    filter: contrast(0.94);
-                    transform: translate3d(-50%, 200px, 0px) rotateX(62deg) rotateY(1deg) rotateZ(-3deg) scale(1.05);
-                    opacity: 0;
-                    box-shadow: -1px 10px 1px rgba(0, 0, 0, 0.08);
-                }
-            }
-
+    @keyframes slideLast {
+        80% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(-120px) translateY(-250px) rotateZ(-90deg);
+            opacity: 0;
+        }
+    }
+    @keyframes slideLastReverse {
+        80% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(-120px) translateY(250px) rotateZ(-90deg);
+            opacity: 0;
         }
     }
 }
