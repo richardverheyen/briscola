@@ -1,63 +1,79 @@
-.HandView {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-    align-items: flex-end;
+#HandView {
     height: 240px;
     padding: 0;
     margin: 0 0 40px;
+    filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.1));
 
     @media (max-width: 500px) {
         margin: 0 0 10px;
     }
 
-    .card-view {
-        position: relative;
-        width: 40px;
-        height: 40px;
+    > li {
         list-style: none;
-        margin: 20px;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 124px;
+        height: 208px;
+        border-radius: 10px;
+        cursor: pointer;
+        transform: translateX(-50%);
+        transition: ease 500ms transform;
+        perspective: 800px;
+        transform-origin: 50% 500px;
 
-        &:first-child {
-            transform: rotate(15deg);
-            transform-origin: -20px 50%;
+        &:nth-child(1) {
+            transform: translateX(-50%) rotateZ(-16deg);
         }
-        &:last-child {
-            transform: rotate(-15deg);
-            transform-origin: 60px 50%;
+        &:nth-child(3) {
+            transform: translateX(-50%) rotateZ(16deg);
         }
 
-        > div {
+        &:before {
+            content: "";
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translate(-50%, 0);
-            width: 116px;
-            height: 200px;
+            width: 124px;
+            height: 208px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.05);
+            background-color: white;
             background-image: url('../sprite.jpg');
+            background-position: inherit;
             background-repeat: no-repeat;
             background-size: 1300px;
-            transition: transform ease 200ms, box-shadow ease 200ms;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 4px white solid;
+            transition: opacity ease 500ms;
 
-            &:hover {
-                @media (min-width: 801px) {
-                    transform: translate(-50%, -5px);
-                    box-shadow: 0 2.5px 15px rgba(0, 0, 0, 0.1);
+            animation-name: slideIn;
+            animation-duration: 1s;
+            animation-timing-function: ease-in;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+
+            @keyframes slideIn {
+                0% {
+                    transform: translateY(-20px);
+                    opacity: 0;
                 }
-            }
-            &:active {
-                filter: contrast(0.94);
-            }
-            &:focus {
-                @media (max-width: 800px) {
-                    transform: translate(-50%, -5px);
-                    box-shadow: 0 2.5px 15px rgba(0, 0, 0, 0.1);
+                50% {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0px);
+                    opacity: 1;
                 }
             }
         }
 
+        
+        &.clicked:nth-child(1):before {
+            opacity: 0;
+        }
+
+        &.clicked:nth-child(3):before {
+            opacity: 0;
+        }
     }
 }
