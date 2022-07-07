@@ -1,53 +1,65 @@
 .TrickView {    
-    width: 180px;
+    position: relative;
+    width: 160px;
     height: 140px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 0 0 40px;
+    padding: 0;
     transition: all ease 1s;
+    perspective: 800px;
 
-    @media (max-width: 500px) {
-        margin: -20px 0 0 -20px;
-        transform: scale(0.8);
+    @media (max-width: 450px) {
+        transform: scale(0.95);
     }
-
+    @media (max-width: 400px) {
+        transform: scale(0.92);
+    }
+    @media (max-width: 380px) {
+        transform: scale(0.90);
+    }
+    @media (max-width: 360px) {
+        transform: scale(0.88);
+    }
 
     &.center {
         transform: scale(1.2);
-        padding: 0 0 0 50px;
         cursor: pointer;
         margin: auto;
     }
 
     > li {
-        position: relative;
-        width: 40px;
-        height: 1px;
-        margin: 5px;
         list-style: none;
+        position: absolute;
+        bottom: 35px;
+        left: 60px;
+        width: 124px;
+        height: 208px;
+        border-radius: 10px;
+        cursor: pointer;
+        transform: translateX(-50%);
+        transition: ease 500ms transform;
+        perspective: 800px;
+        transform-origin: 0 100%;
 
-        > div {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translate(-50%, 100px) rotateX(50deg) rotateZ(1deg);
-            transform-origin: 58px 100px 0px;
-            width: 116px;
-            height: 200px;
-            // transition: transform ease 200ms, box-shadow ease 200ms;
-            border-radius: 10px;
-            background: white;
-            background-repeat: no-repeat;
-            background-size: 1300px;
-            background-image: url('../sprite.jpg');
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        &:nth-child(1) {
+            transform: translateZ(-20px) translateX(-50%) rotate3d(0.7, -0.02, 0.01, 55deg);
+        }
+        &:nth-child(2) {
+            transform: translateZ(-20px) translateX(calc(-50% + 40px)) translateY(40px) rotate3d(0.7, -0.02, 0.01, 55deg);
         }
 
-        &:first-child > div {
-            bottom: 10px;
+        &:before {
+            content: "";
+            position: absolute;
+            width: 124px;
+            height: 208px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            background-image: url('../sprite.jpg');
+            background-position: inherit;
+            background-repeat: no-repeat;
+            background-size: 1300px;
+            border: 4px white solid;
         }
     }
 }
