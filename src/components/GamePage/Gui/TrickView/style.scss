@@ -38,6 +38,8 @@
         transition: ease 500ms transform;
         perspective: 800px;
         transform-origin: 0 100%;
+        z-index: auto;
+
 
         &:nth-child(1) {
             transform: translateZ(-20px) translateX(-50%) rotate3d(0.7, -0.02, 0.01, 55deg);
