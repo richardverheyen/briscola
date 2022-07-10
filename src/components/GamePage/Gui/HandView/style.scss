@@ -4,11 +4,6 @@
     margin: 0 0 40px;
     filter: sepia(0.3) drop-shadow(0 8px 8px rgba(#574117, 0.1));
 
-
-    @media (max-width: 500px) {
-        margin: 0 0 10px;
-    }
-
     > li {
         list-style: none;
         position: absolute;
