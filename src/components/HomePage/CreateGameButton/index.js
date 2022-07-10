@@ -31,6 +31,7 @@ export default function CreateGameButton() {
       loading={isLoading}
       onClick={handleCreateGame}
       variant="contained"
+      size="large"
     >
       Create Game
     </LoadingButton>

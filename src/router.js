@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { Auth } from "contexts";
 import HomePage from "components/HomePage";
 import GamePage from "components/GamePage";
+import RulesPage from "components/RulesPage";
 
 function Router() {
   const { auth, signIn } = useContext(Auth);
@@ -22,6 +23,7 @@ function Router() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/game/:id" element={<GamePage />} />
+      <Route path="/rules" element={<RulesPage />} />
     </Routes>
   ) : null;
 }

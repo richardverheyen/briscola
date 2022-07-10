@@ -1,0 +1,16 @@
+main#RulesPage {
+    > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        text-align: left;
+        padding-top: 80px;
+        padding-bottom: 80px;
+        max-width: 600px;
+
+        > h1, > h2 {
+            margin: 0 auto 20px;
+        }
+    }
+}
