@@ -4,6 +4,7 @@ div.Gui {
     justify-content: space-between;
     width: 100%;
     flex-grow: 1;
+    position: relative;
 
     > .center {
         display: flex;

@@ -4,21 +4,27 @@
     width: 210px;
     max-width: 18vw;
     height: 150px;
-    perspective: 800px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    perspective: 950px;
+    filter: sepia(0.2) drop-shadow(0 2px 4px rgba(#574117, 0.1));
     transition: all ease 200ms;
 
+    @media (max-width: 500px) {
+        position: absolute;
+        top: 15%;
+        right: -20px;
+        transform: scale(0.80);
+    }
     @media (max-width: 450px) {
-        transform: scale(0.95);
+        // transform: scale(0.95);
     }
     @media (max-width: 400px) {
-        transform: scale(0.92);
+        // transform: scale(0.92);
     }
     @media (max-width: 380px) {
-        transform: scale(0.90);
+        // transform: scale(0.90);
     }
     @media (max-width: 360px) {
-        transform: scale(0.88);
+        // transform: scale(0.88);
     }
 
     > li {
@@ -40,7 +46,7 @@
             height: 208px;
             box-sizing: border-box;
             border-radius: 10px;
-            box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 2px 1px rgba(#574117, 0.1);
             background-color: white;
             background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
             border: 4px white solid;
