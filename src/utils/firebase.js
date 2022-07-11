@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
+import { getAnalytics } from "firebase/analytics";
 import config from './config';
 
 // Initialize firebase
@@ -26,3 +27,5 @@ export const functions = getFunctions(
 if (process.env.NODE_ENV !== 'production') {
     connectFunctionsEmulator(functions, "localhost", 5001);
 }
+
+export const analytics = getAnalytics(firebaseApp);
