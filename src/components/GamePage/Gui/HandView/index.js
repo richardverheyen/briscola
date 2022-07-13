@@ -4,7 +4,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 import { playCardError } from "utils/toast";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Hand, Game, AnimationState } from "contexts";
 
 function HandView() {
@@ -14,11 +14,16 @@ function HandView() {
   let cards = handContext?.cards;
   const playCard = httpsCallable(functions, "playCard");
 
+  useEffect(() => {
+      document.querySelectorAll(".card-played").forEach(card => {
+        card.classList.remove("card-played");
+      })
+  }, [cards]);
+
   const handleAnimationEnd = (e) => {
     console.log("handleAnimationEnd!");
-    if (e.target.classList.contains("clicked") && playCardAnimationRunning) {
+    if (e.target.classList.contains("card-played") && playCardAnimationRunning) {
       setPlayCardAnimationRunning(false);
-      e.target.classList.remove("clicked");
     }
   };
 
@@ -34,7 +39,7 @@ function HandView() {
     // this clicked class triggers the playCard animation and is removed by the onAnimationEnd handler
     // The sideEffect of this is that Hand.playCardAnimationRunning can prevent updating the Hand context
     // So the playCard animation always has time to complete.
-    cardEl.classList.add("clicked");
+    cardEl.classList.add("card-played");
     setPlayCardAnimationRunning(true);
 
     playCard({ gameId, card })

@@ -63,7 +63,7 @@
             }
         }
 
-        &.clicked:before {
+        &.card-played:before {
             animation-name: playCard;
         }
 
