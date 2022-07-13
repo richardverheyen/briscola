@@ -17,6 +17,7 @@
         transition: ease 500ms transform;
         perspective: 800px;
         transform-origin: 50% 500px;
+        transform-style: preserve-3d;
 
         &:nth-child(1) {
             transform: translateX(-50%) rotateZ(-16deg);
@@ -42,18 +43,17 @@
             transition: opacity ease 500ms;
 
             animation-name: slideIn;
-            animation-duration: 1s;
-            animation-timing-function: ease-in;
+            animation-duration: 200ms;
+            animation-timing-function: ease;
             animation-iteration-count: 1;
             animation-fill-mode: forwards;
 
             @keyframes slideIn {
                 0% {
-                    transform: translateY(-20px);
+                    transform: translateY(-50px);
                     opacity: 0;
                 }
                 50% {
-                    transform: translateY(-20px);
                     opacity: 0;
                 }
                 100% {
@@ -63,13 +63,26 @@
             }
         }
 
-        
-        &.clicked:nth-child(1):before {
-            opacity: 0;
+        &.clicked:before {
+            animation-name: playCard;
         }
 
-        &.clicked:nth-child(3):before {
-            opacity: 0;
+        @keyframes playCard {
+            0% {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+            33% {
+                opacity: 1;
+            }
+            66% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
         }
     }
 }

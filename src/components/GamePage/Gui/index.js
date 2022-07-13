@@ -1,6 +1,6 @@
 import "./style.scss";
 import { useContext } from "react";
-import { Hand, Auth, Game } from "contexts";
+import { Auth, Game } from "contexts";
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
@@ -13,8 +13,6 @@ import TrickView from "./TrickView";
 function Gui() {
   let { game, isHost, id: gameId } = useContext(Game);
   let { auth } = useContext(Auth);
-  let handContext = useContext(Hand);
-  let cards = handContext?.cards;
 
   const takeCards = httpsCallable(functions, "takeCards");
 
@@ -33,19 +31,18 @@ function Gui() {
       });
   };
 
-  
   function playerWhoseTurnItIs() {
     if (game.currentPlayersTurn === auth.uid) {
       return "your";
     } else if (isHost && game?.oppoDisplayName) {
-      return game?.oppoDisplayName + '\'s';
+      return game?.oppoDisplayName + "'s";
     } else if (!isHost && game?.hostDisplayName) {
-      return game?.hostDisplayName + '\'s';
+      return game?.hostDisplayName + "'s";
     } else {
       return "their";
     }
   }
-  if (!game || !cards || !auth) {
+  if (!game || !auth) {
     return null;
   }
 
@@ -71,7 +68,7 @@ function Gui() {
         />
       </div>
 
-      <HandView game={game} gameId={gameId} cards={cards} />
+      <HandView />
     </div>
   );
 }
