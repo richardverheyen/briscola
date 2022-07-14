@@ -30,6 +30,7 @@
         background: #efefef;
         overflow: scroll;
         margin-bottom: auto;
+        white-space: nowrap;
 
         @media (max-width: 500px) {
             padding: 6px 6px 6px 12px;
