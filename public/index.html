@@ -3,31 +3,63 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Briscola by Richard Verheyen"
-    />
-    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <meta name="description" content="Briscola by Richard Verheyen" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <title>Briscola</title>
     <style>
-      @media (min-width: 501px) {
-        body {
-          background: linear-gradient( white, #ffefd7);
+      body {
+        background: linear-gradient(white, #ffefd7);
+      }
+      body * {
+        transform-style: preserve-3d;
+        perspective: calc(10 * var(--doc-height));
+      }
+
+      .table {
+        position: fixed;
+        left: 50%;
+        bottom: calc(0.1 * var(--doc-height));
+        width: var(--doc-height);
+        height: var(--doc-height);
+        margin-left: calc(-0.5 * var(--doc-height));
+        transform: rotateX(45deg);
+        transform-origin: center calc(100% + calc(0.1 * var(--doc-height)));
+        border-radius: 50%;
+        animation: tableFadeIn ease 1s backwards reverse 1;
+      }
+      @keyframes tableFadeIn {
+        from {
+          transform: rotateX(45deg) translateZ(0px);
+        }
+        to {
+          transform: rotateX(50deg) translateZ(0px);
         }
       }
-     
-      @media (max-width: 500px) {
-        body {
-          background-image: url('%PUBLIC_URL%/table.jpeg');
-          background-size: calc(400px + 20vw);
-          background-position: top right;
-          background-repeat: no-repeat;
-        }
+
+      .table:before {
+        /* table bottom/sides */
+        content: "";
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: linear-gradient(to right, #908372, #322d28);
+        border-radius: 50%;
+      }
+      .table:after {
+        /* tabletop */
+        content: "";
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: linear-gradient(100deg, #d6c9b6, #b9aea0);
+        transform: translateZ(20px);
+        border-radius: 50%;
       }
     </style>
   </head>
-  
+
   <body>
+    <div class="table"></div>
     <div id="root"></div>
   </body>
 </html>
