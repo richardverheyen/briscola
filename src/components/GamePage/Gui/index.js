@@ -56,17 +56,15 @@ function Gui() {
         <h2>Game over</h2>
       )}
 
-      <div className="center">
-        <TrickView game={game} takeCards={handleTakeCards} />
+      <TrickView game={game} takeCards={handleTakeCards} />
 
-        <DeckView
-          auth={auth}
-          game={game}
-          gameId={gameId}
-          deckHeight={game.deckHeight}
-          lastCard={game.lastCard}
-        />
-      </div>
+      <DeckView
+        auth={auth}
+        game={game}
+        gameId={gameId}
+        deckHeight={game.deckHeight}
+        lastCard={game.lastCard}
+      />
 
       <HandView />
     </div>

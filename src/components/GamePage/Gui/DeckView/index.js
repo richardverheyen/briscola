@@ -83,13 +83,14 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
           tabIndex={i === deckHeight - 1 ? "0" : "-1"}
           style={{
             animationDelay: `${arr.length - i - 1}s`,
-            transform: `translateZ(${i}px) rotate3d(0.7, 0.2, -0.2, 30deg)`,
-            transformOrigin: `0 100% -${i}px`,
-            perspectiveOrigin: `0 100% -${i}px`,
+            transform: `rotateY(1deg) translateZ(${i}px) rotateX(45deg) translateY(var(--deck-translateY))`,
+            transformOrigin: `right var(--deck-bottom) -${i}px`,
             backgroundPosition: i === 0 ? spritePosition(lastCard) : "",
           }}
           onClick={(e) => handleDrawCard(e, i)}
-        />
+        >
+        <div></div>
+        </li>
       ))}
     </ul>
   );

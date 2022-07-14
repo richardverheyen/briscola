@@ -13,7 +13,16 @@ function Router() {
     signIn();
 
     const appHeight = () => {
-      document.documentElement.style.setProperty("--doc-height", `${window.innerHeight}px`);
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      const deck = {
+        bottom: 0.6 * vh,
+        translateY: vw < 500 ? -0.4 * vh : -0.1 * vh,
+      };
+
+      document.documentElement.style.setProperty("--doc-height", `${vh}px`);
+      document.documentElement.style.setProperty("--deck-bottom", `${deck.bottom}px`);
+      document.documentElement.style.setProperty("--deck-translateY", `${deck.translateY}px`);
     };
     window.addEventListener("resize", appHeight);
     appHeight();
