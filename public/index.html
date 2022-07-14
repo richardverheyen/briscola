@@ -9,6 +9,22 @@
     />
     <link rel="icon" type="image/png" href="/favicon.png"/>
     <title>Briscola</title>
+    <style>
+      @media (min-width: 501px) {
+        body {
+          background: linear-gradient( white, #ffefd7);
+        }
+      }
+     
+      @media (max-width: 500px) {
+        body {
+          background-image: url('%PUBLIC_URL%/table.jpeg');
+          background-size: calc(400px + 20vw);
+          background-position: top right;
+          background-repeat: no-repeat;
+        }
+      }
+    </style>
   </head>
   
   <body>

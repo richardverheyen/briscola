@@ -3,7 +3,7 @@ import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { yourTurnToDraw, scoreboardShown } from "utils/toast";
 import { useNavigate } from "react-router-dom";
-import { Auth } from "contexts";
+import { Auth, AnimationState } from "contexts";
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
@@ -17,6 +17,7 @@ export const Game = createContext({
 });
 
 function GameHooks() {
+  let { playCardAnimationRunning } = useContext(AnimationState);
   const { auth } = useContext(Auth);
   let navigate = useNavigate();
   const [isHost, setIsHost] = useState(false);
@@ -39,6 +40,9 @@ function GameHooks() {
   }, [id]);
 
   useEffect(() => {
+    if (playCardAnimationRunning) {
+      return;
+    }
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
 
@@ -56,7 +60,7 @@ function GameHooks() {
       setIsHost(undefined);
       navigate("/");
     }
-  }, [gameSnapshot]);
+  }, [gameSnapshot, playCardAnimationRunning]);
 
   function initEgo(gameData) {
     if (auth.uid === gameData.host) {

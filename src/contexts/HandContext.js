@@ -1,13 +1,14 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { Auth, Game } from "contexts";
+import { Auth, Game, AnimationState } from "contexts";
 
 export const Hand = createContext({
   cards: []
 });
 
 function HandHooks() {
+  const { playCardAnimationRunning } = useContext(AnimationState);
   const { auth } = useContext(Auth);
   const { game } = useContext(Game);
 
@@ -26,10 +27,13 @@ function HandHooks() {
   }, [game]);
 
   useEffect(() => {
+    if (playCardAnimationRunning) {
+      return;
+    }
     if (handSnapshot) {
       setHand(handSnapshot.data());
     }
-  }, [handSnapshot]);
+  }, [handSnapshot, playCardAnimationRunning]);
 
   return hand;
 }
