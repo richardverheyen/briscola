@@ -7,8 +7,6 @@
         right: 0;
         bottom: 0;
 
-        user-select: none;
-        pointer-events: none;
         list-style: none;
         width: 124px;
         height: 208px;
@@ -20,6 +18,10 @@
         > div {
             transform-origin: 62px 104px;
             transition: ease 500ms all;
+
+            @media screen and (max-width: 600px) {
+                transform: translateX(50px);
+            }
 
             @media screen and (max-width: 500px) {
                 transform: translateX(50px) rotate(-30deg);
@@ -41,6 +43,8 @@
         }
 
         &:first-child > div {
+                background-position: inherit;
+
             &:before {
                 background-image: url('../sprite.jpg');
                 background-repeat: no-repeat;
@@ -53,31 +57,35 @@
     }
     
     
-    &.animate li:nth-last-child(1):before,
-    &.animate li:nth-last-child(2):before {
-        animation-duration: 1s;
-        animation-timing-function: ease;
-        animation-iteration-count: 1;
-        animation-direction: normal;
-        animation-fill-mode: forwards;
+    &.animate li:nth-last-child(1) > div,
+    &.animate li:nth-last-child(2) > div {
         animation-delay: inherit;
+
+        &:before {
+            animation-duration: 1s;
+            animation-timing-function: ease;
+            animation-iteration-count: 1;
+            animation-direction: normal;
+            animation-fill-mode: forwards;
+            animation-delay: inherit;
+        }
     }
-    &.animate li:nth-last-child(1):before {
+    &.animate li:nth-last-child(1) > div:before {
         animation-name: slideBack;
     }
-    &.animate li:nth-last-child(2):before {
+    &.animate li:nth-last-child(2) > div:before {
         animation-name: slideForwards;
     }
-    &.animate li:first-child:before {
+    &.animate li:first-child > div:before {
         animation-name: slideLast;
     }
-    &.animate.reverse li:nth-last-child(1):before {
+    &.animate.reverse li:nth-last-child(1) > div:before {
         animation-name: slideForwards;
     }
-    &.animate.reverse li:nth-last-child(2):before {
+    &.animate.reverse li:nth-last-child(2) > div:before {
         animation-name: slideBack;
     }
-    &.animate.reverse li:first-child:before {
+    &.animate.reverse li:first-child > div:before {
         animation-name: slideLastReverse;
     }
     
