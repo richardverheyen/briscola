@@ -15,18 +15,19 @@
         transform-origin: 0 100%;
         z-index: auto;
 
-        perspective-origin: calc(400px - 50%) 0;
+        perspective-origin: calc(400px + 50%) 0;
 
         @media (max-width: 800px) {
-            perspective-origin: calc(50vw - 50%) 0;
+            perspective-origin: calc(50vw + 50%) 0;
         }
 
         @media (max-width: 600px) {
-            perspective-origin: calc(50vw - 50%) 20vh; 
+            perspective-origin: calc(50vw + 50%) 10vh; 
         }  
         
         @media (max-width: 500px) {
-            perspective-origin: calc(50vw - 50%) 30vh; 
+            perspective-origin: calc(50vw + 50%) 50vh; 
+            perspective-origin: 0 0; 
         }  
 
         > div {
@@ -38,7 +39,7 @@
             }
 
             @media screen and (max-width: 500px) {
-                transform: translateX(-75%) rotateX(45deg);
+                transform: translateX(-75%) rotateX(45deg) translateZ(-200px);
             }
 
             &:before {

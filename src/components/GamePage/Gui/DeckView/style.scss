@@ -22,8 +22,8 @@
         }  
         
         @media (max-width: 500px) {
-            // perspective-origin: calc(-55vw + 50%) 40vh; 
             perspective-origin: calc(-15vw + 50%) 50vh;
+            // perspective-origin: 0 20vh; 
             
             transform: translateY(50%) translateX(25%);
         }  
