@@ -48,7 +48,7 @@
                 height: 208px;
                 box-sizing: border-box;
                 border-radius: 10px;
-                box-shadow: 0px 2px 4px rgba(#574117, 0.1);
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
                 background-color: white;
                 background-image: url('../sprite.jpg');
                 background-position: inherit;
@@ -58,7 +58,7 @@
                 cursor: pointer;
 
                 @media (max-width: 500px) {
-                    transform: rotateZ(-25deg);
+                    transform: rotateZ(-24deg);
                 }
             }
         }
@@ -67,14 +67,14 @@
             transform: translate(-30px, -30px);
 
             @media (max-width: 500px) {
-                transform: rotateZ(-25deg);
+                transform: rotateZ(-24deg);
             }
         }
         &:nth-child(2) > div:before {
             transform: translate(30px, 30px);
 
             @media (max-width: 500px) {
-                transform: translate(80px, 30px) rotateZ(-25deg);
+                transform: translate(80px, 30px) rotateZ(-24deg);
             }
         }
     }

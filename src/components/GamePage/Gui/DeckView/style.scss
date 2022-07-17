@@ -17,13 +17,15 @@
         }
 
         @media (max-width: 600px) {
-            perspective-origin: calc(-50vw + 55%) 20vh; 
-            transform: translateY(50%) translateX(50%);
+            perspective-origin: calc(-50vw + 55%) 10vh; 
+            transform: translateY(50%) translateX(25%);
         }  
         
         @media (max-width: 500px) {
-            perspective-origin: calc(-75vw + 50%) 40vh; 
-            transform: translateY(50%) translateX(50%);
+            // perspective-origin: calc(-55vw + 50%) 40vh; 
+            perspective-origin: calc(-15vw + 50%) 50vh;
+            
+            transform: translateY(50%) translateX(25%);
         }  
 
         > div {
@@ -34,7 +36,7 @@
             }
 
             @media screen and (max-width: 500px) {
-                transform: translateX(50px) rotate(-26deg);
+                transform: translateX(50px) rotate(-24deg);
             }
 
             &:before {
@@ -44,17 +46,16 @@
                 height: 208px;
                 box-sizing: border-box;
                 border-radius: 10px;
-                box-shadow: 0px 2px 1px rgba(#574117, 0.1);
                 background-color: white;
                 background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
-                box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.08);
+                box-shadow: 4px 5px 6px rgb(0 0 0 / 10%);
                 border: 4px white solid;  
                 transition: all ease 1s;
                 cursor: pointer;
 
                 @media screen and (max-width: 500px) {
-                    box-shadow: -2px 6px 7px rgb(0 0 0 / 5%);
-                    transform: rotateZ(-28deg);
+                    box-shadow: 0px 8px 7px rgb(0 0 0 / 10%);
+                    transform: rotateZ(-24deg);
                 }  
             }
             
