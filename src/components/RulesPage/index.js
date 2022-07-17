@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./style.scss";
 
 function RulesPage() {
+  const navigate = useNavigate();
+
   return (
     <main id="RulesPage">
       <div className="gutters">
@@ -20,7 +22,7 @@ function RulesPage() {
         <p>Unlike other trump card games, players are not required to follow suit, that is, to play the same suit as the lead player.</p>
         <p>Once the winner of a trick is determined, that player collects the played cards, and places them face down in a pile.</p>
         <p>Then, each player draws a card from the remaining deck, starting with the player who won the trick, proceeding counter-clockwise. Note that the last card collected in the game should be the up-turned Briscola. The player who won the trick leads the next hand. During game play and only before the next to the last hand is played, a player who draws the card with the seven of trump can take the "briscola". This may be done only if the player has won a hand. Before the last hand, people in the same team can look at each other's cards.</p>
-        <Link to="/">Return to Home</Link>        
+        <a href="#" onClick={() => navigate(-1)}>Go Back</a>        
       </div>
     </main>
   );
