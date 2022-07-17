@@ -1,12 +1,11 @@
 #HandView {
-    height: 240px;
     padding: 0;
-    margin: 0 0 40px;
+    margin: 0;
 
     > li {
         list-style: none;
-        position: absolute;
-        bottom: 0;
+        position: fixed;
+        bottom: 32px;
         left: 50%;
         width: 124px;
         height: 208px;
