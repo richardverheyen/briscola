@@ -8,7 +8,6 @@
         width: 124px;
         height: 208px;
         border-radius: 10px;
-        cursor: pointer;
         transition: ease 500ms all;
 
         perspective-origin: calc(-400px + 50%) 0;
@@ -27,14 +26,7 @@
             transform: translateY(50%) translateX(50%);
         }  
 
-        // @media (max-width: 450px) {
-        //     perspective-origin: calc(-50vw + 100%) 40vh;
-        //     transform: translateY(50%) translateX(50%);
-        // }
-
         > div {
-            width: 100%;
-            height: 100%;
             transition: ease 500ms all;
 
             @media screen and (max-width: 600px) {
@@ -42,7 +34,7 @@
             }
 
             @media screen and (max-width: 500px) {
-                transform: translateX(50px) rotate(-30deg);
+                transform: translateX(50px) rotate(-26deg);
             }
 
             &:before {
@@ -58,6 +50,7 @@
                 box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.08);
                 border: 4px white solid;  
                 transition: all ease 1s;
+                cursor: pointer;
 
                 @media screen and (max-width: 500px) {
                     box-shadow: -2px 6px 7px rgb(0 0 0 / 5%);
@@ -78,9 +71,10 @@
                 box-shadow: none;
                 transform: translateX(-100px) rotateZ(-90deg);
                 box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+                cursor: pointer;
 
                 @media screen and (max-width: 500px) {
-                    transform: rotateZ(-28deg) translateX(-100px) rotateZ(-90deg);
+                    transform: rotateZ(-26deg) translateX(-100px) rotateZ(-90deg);
                 }  
             }
         }

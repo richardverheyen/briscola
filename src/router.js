@@ -17,15 +17,14 @@ function Router() {
       const vw = window.innerWidth;
       const hingePoint = 0.15 * vh;
       const hingePointInverse = -0.15 * vh;
-
-      const deck = {
-        bottom: ((window.innerWidth < 500 ? 0.8 : 0.5) * vh),
-      };
+      const deckBottom = (window.innerWidth < 500 ? 0.8 : 0.5) * vh;
+      const trickBottom = 0.5 * vh;
 
       document.documentElement.style.setProperty("--doc-height", `${vh}px`);
       document.documentElement.style.setProperty("--hinge-point", `${hingePoint}px`);
       document.documentElement.style.setProperty("--hinge-point-inverse", `${hingePointInverse}px`);
-      document.documentElement.style.setProperty("--deck-bottom", `${deck.bottom}px`);
+      document.documentElement.style.setProperty("--deck-bottom", `${deckBottom}px`);
+      document.documentElement.style.setProperty("--trick-bottom", `${trickBottom}px`);
     };
     window.addEventListener("resize", appHeight);
     appHeight();
