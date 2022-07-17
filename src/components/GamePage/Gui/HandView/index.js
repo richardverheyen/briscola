@@ -21,7 +21,6 @@ function HandView() {
   }, [cards]);
 
   const handleAnimationEnd = (e) => {
-    console.log("handleAnimationEnd!");
     if (e.target.classList.contains("card-played") && playCardAnimationRunning) {
       setPlayCardAnimationRunning(false);
     }
