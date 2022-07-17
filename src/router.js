@@ -15,17 +15,24 @@ function Router() {
     const appHeight = () => {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
+      const hingePoint = 0.15 * vh;
+      const hingePointInverse = -0.15 * vh;
+
       const deck = {
-        bottom: 0.6 * vh,
-        translateY: vw < 500 ? -0.4 * vh : -0.1 * vh,
+        bottom: ((window.innerWidth < 500 ? 0.8 : 0.5) * vh),
       };
 
       document.documentElement.style.setProperty("--doc-height", `${vh}px`);
+      document.documentElement.style.setProperty("--hinge-point", `${hingePoint}px`);
+      document.documentElement.style.setProperty("--hinge-point-inverse", `${hingePointInverse}px`);
       document.documentElement.style.setProperty("--deck-bottom", `${deck.bottom}px`);
-      document.documentElement.style.setProperty("--deck-translateY", `${deck.translateY}px`);
     };
     window.addEventListener("resize", appHeight);
     appHeight();
+
+    return () => {
+      window.removeEventListener("resize", appHeight);
+    }
   }, []);
 
   return auth ? (

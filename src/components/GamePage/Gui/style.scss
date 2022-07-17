@@ -1,7 +1,6 @@
 div.Gui {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: relative;
     width: 100%;
     flex-grow: 1;
+    margin-bottom: var(--hinge-point);
 }

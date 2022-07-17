@@ -79,17 +79,17 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
     <ul ref={deckViewEl} className={`DeckView`}>
       {shownCards.map((card, i, arr) => (
         <li
+          className="transform-point"
           key={i}
-          tabIndex={i === deckHeight - 1 ? "0" : "-1"}
-          style={{
-            animationDelay: `${arr.length - i - 1}s`,
-            transform: `rotateY(1deg) translateZ(${i}px) rotateX(45deg) translateY(var(--deck-translateY))`,
-            transformOrigin: `right var(--deck-bottom) -${i}px`,
-            backgroundPosition: i === 0 ? spritePosition(lastCard) : "",
-          }}
           onClick={(e) => handleDrawCard(e, i)}
         >
-        <div></div>
+        <div 
+          style={{
+            animationDelay: `${arr.length - i - 1}s`,
+            transform: `translateZ(${i}px) rotateX(45deg)`,
+            transformOrigin: `50% calc(50% + var(--deck-bottom)) -${i}px`,
+            backgroundPosition: i === 0 ? spritePosition(lastCard) : "",
+          }}/>
         </li>
       ))}
     </ul>
