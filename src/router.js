@@ -13,10 +13,25 @@ function Router() {
     signIn();
 
     const appHeight = () => {
-      document.documentElement.style.setProperty("--doc-height", `${window.innerHeight}px`);
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      const hingePoint = 0.15 * vh;
+      const hingePointInverse = -0.15 * vh;
+      const deckBottom = (window.innerWidth < 500 ? 0.75 : 0.5) * vh;
+      const trickBottom = (window.innerWidth < 500 ? 0.65 : 0.5) * vh;
+
+      document.documentElement.style.setProperty("--doc-height", `${vh}px`);
+      document.documentElement.style.setProperty("--hinge-point", `${hingePoint}px`);
+      document.documentElement.style.setProperty("--hinge-point-inverse", `${hingePointInverse}px`);
+      document.documentElement.style.setProperty("--deck-bottom", `${deckBottom}px`);
+      document.documentElement.style.setProperty("--trick-bottom", `${trickBottom}px`);
     };
     window.addEventListener("resize", appHeight);
     appHeight();
+
+    return () => {
+      window.removeEventListener("resize", appHeight);
+    }
   }, []);
 
   return auth ? (

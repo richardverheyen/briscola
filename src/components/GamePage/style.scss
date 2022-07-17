@@ -1,4 +1,6 @@
 main#GamePage {
+    overflow: hidden;
+    
     > div {
         display: flex;
         flex-direction: column;

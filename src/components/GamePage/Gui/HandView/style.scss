@@ -1,13 +1,11 @@
 #HandView {
-    height: 240px;
     padding: 0;
-    margin: 0 0 40px;
-    filter: sepia(0.3) drop-shadow(0 8px 8px rgba(#574117, 0.1));
+    margin: 0;
 
     > li {
         list-style: none;
-        position: absolute;
-        bottom: 0;
+        position: fixed;
+        bottom: 32px;
         left: 50%;
         width: 124px;
         height: 208px;
@@ -33,7 +31,7 @@
             height: 208px;
             box-sizing: border-box;
             border-radius: 10px;
-            box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
             background-color: white;
             background-image: url('../sprite.jpg');
             background-position: inherit;

@@ -3,31 +3,67 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Briscola by Richard Verheyen"
-    />
-    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <meta name="description" content="Briscola by Richard Verheyen" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <title>Briscola</title>
     <style>
-      @media (min-width: 501px) {
-        body {
-          background: linear-gradient( white, #ffefd7);
+      body {
+        background: linear-gradient(white, #ffefd7);
+      }
+
+      .transform-point {
+        transform-style: preserve-3d;
+        perspective: calc(2 * var(--doc-height));
+      }
+
+      body > table {
+        position: fixed;
+        left: 50%;
+        bottom: var(--hinge-point);
+        width: var(--doc-height);
+        height: var(--doc-height);
+        margin-left: calc(-0.5 * var(--doc-height));
+        transform: rotateX(45deg);
+        transform-origin: center 100%;
+        border-radius: 50%;
+        animation: tableFadeIn ease-out 1s backwards reverse 1;
+        z-index: -1;
+      }
+      @keyframes tableFadeIn {
+        from {
+          transform: rotateX(45deg) translateZ(0px);
+        }
+        to {
+          transform: rotateX(40deg) translateZ(0px);
         }
       }
-     
-      @media (max-width: 500px) {
-        body {
-          background-image: url('%PUBLIC_URL%/table.jpeg');
-          background-size: calc(400px + 20vw);
-          background-position: top right;
-          background-repeat: no-repeat;
-        }
+
+      body > table:before {
+        /* table sides */
+        content: "";
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: linear-gradient(to right, #908372, #322d28);
+        transform: translateZ(-20px);
+        border-radius: 50%;
+      }
+      body > table:after {
+        /* tabletop */
+        content: "";
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: linear-gradient(100deg, #d6c9b6, #b9aea0);
+        transform: translateZ(0px);
+        border-radius: 50%;
       }
     </style>
   </head>
-  
+
   <body>
+    <table class="transform-point"></table>
     <div id="root"></div>
   </body>
 </html>

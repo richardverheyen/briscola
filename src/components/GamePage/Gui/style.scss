@@ -1,17 +1,6 @@
 div.Gui {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: relative;
     width: 100%;
     flex-grow: 1;
-    position: relative;
-
-    > .center {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        max-width: 550px;
-        margin: 0 auto;
-    }
+    margin-bottom: var(--hinge-point);
 }
