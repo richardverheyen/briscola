@@ -14,14 +14,14 @@ function Gui() {
   let { game, isHost, id: gameId } = useContext(Game);
   let { auth } = useContext(Auth);
 
-  const takeCards = httpsCallable(functions, "takeCards");
+  const gameInteract = httpsCallable(functions, "gameInteract");
 
   const handleTakeCards = () => {
     if (game.deckHeight > 0) {
       return;
     }
 
-    takeCards({ gameId })
+    gameInteract({ gameId, func: "takeCards" })
       .then((res) => {
         console.log("success!", { res });
       })

@@ -12,7 +12,7 @@ function HandView() {
   let { playCardAnimationRunning, setPlayCardAnimationRunning} = useContext(AnimationState);
   let handContext = useContext(Hand);
   let cards = handContext?.cards;
-  const playCard = httpsCallable(functions, "playCard");
+  const gameInteract = httpsCallable(functions, "gameInteract");
 
   useEffect(() => {
       document.querySelectorAll(".card-played").forEach(card => {
@@ -41,7 +41,7 @@ function HandView() {
     cardEl.classList.add("card-played");
     setPlayCardAnimationRunning(true);
 
-    playCard({ gameId, card })
+    gameInteract({ gameId, card, func: "playCard" })
       .then((res) => {
         console.log("success!", { res });
       })

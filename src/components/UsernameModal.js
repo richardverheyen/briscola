@@ -14,7 +14,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 
 export default function UsernameModal() {
-  const updateUsernameInGame = httpsCallable(functions, "updateUsernameInGame");
+  const gameInteract = httpsCallable(functions, "gameInteract");
   const { auth, user, openUsernameModal, setOpenUsernameModal } =
     useContext(Auth);
   const { id, game } = useContext(Game);
@@ -27,7 +27,7 @@ export default function UsernameModal() {
         displayName: document.getElementById('nickname').value,
       })
       if (game) {
-        await updateUsernameInGame({ id })
+        await gameInteract({ id, func: "updateUsernameInGame" })
       }
       greetUser(auth);
 

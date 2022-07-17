@@ -25,7 +25,7 @@ function GameHooks() {
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
 
-  const joinGame = httpsCallable(functions, "joinGame");
+  const gameInteract = httpsCallable(functions, "gameInteract");
 
   // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
   const quitGame = () => setGameSnapshot(undefined);
@@ -66,7 +66,7 @@ function GameHooks() {
     if (auth.uid === gameData.host) {
       setIsHost(true);
     } else {
-      joinGame({ id })
+      gameInteract({ id, func: "joinGame" })
         .then((res) => {
           console.log("Joined game as opposition!", { res });
         })
