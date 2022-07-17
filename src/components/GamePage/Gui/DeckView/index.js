@@ -10,7 +10,7 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
   let [shownCards, setShownCards] = useState([]);
   let [lastAnimationUnix, setLastAnimationUnix] = useState(null);
   let deckViewEl = useRef();
-  const drawCard = httpsCallable(functions, "drawCard");
+  const gameInteract = httpsCallable(functions, "gameInteract");
 
   function msSinceAnimationFinished() {
     return new Date().getTime() - lastAnimationUnix - 2000;
@@ -69,7 +69,7 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
     // 2000 ms have elapsed (tracked by lastAnimationUnix)
 
     setLastAnimationUnix(new Date().getTime());
-    drawCard({ gameId }).catch((error) => {
+    gameInteract({ gameId, func: "drawCard" }).catch((error) => {
       console.error("Pick Up Failed", { error });
       drawCardError(game);
     });

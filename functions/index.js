@@ -5,26 +5,61 @@ admin.initializeApp();
 
 // https://stackoverflow.com/questions/52444812/getting-user-info-from-request-to-cloud-function-in-firebase
 // https://firebase.google.com/docs/functions/callable
-exports.createGame = functions
+exports.gameInteract = functions
   .region("australia-southeast1")
+  .runWith({
+    minInstances: 0,
+    maxInstances: 5,
+  })
   .https.onCall(async (data, context) => {
-    const hostUserRecord = await admin.auth().getUser(context.auth.uid);
+    const { func } = data;
 
-    const { id } = await admin.firestore().collection("games").add({
-      host: context.auth.uid,
-      hostDisplayName: hostUserRecord.displayName || "host",
-      gameState: "lobby",
-    });
+    let res;
+    switch (func) {
+      case "createGame":
+        res = await createGame(data, context);
+        break;
 
-    return {
-      id,
-    };
+      case "joinGame":
+        res = await joinGame(data, context);
+        break;
+
+      case "playCard":
+        res = await playCard(data, context);
+        break;
+
+      case "drawCard":
+        res = await drawCard(data, context);
+        break;
+
+      case "takeCards":
+        res = await takeCards(data, context);
+        break;
+
+      case "updateUsernameInGame":
+        res = await updateUsernameInGame(data, context);
+        break;
+    }
+
+    return res;
   });
 
-exports.joinGame = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
-    let gameRef = admin.firestore().collection("games").doc(data.id);
+async function createGame(data, context) {
+  const hostUserRecord = await admin.auth().getUser(context.auth.uid);
+
+  const { id } = await admin.firestore().collection("games").add({
+    host: context.auth.uid,
+    hostDisplayName: hostUserRecord.displayName || "host",
+    gameState: "lobby",
+  });
+
+  return {
+    id,
+  };
+}
+
+async function joinGame(data, context) {
+  let gameRef = admin.firestore().collection("games").doc(data.id);
     let privateRef = gameRef.collection("private").doc("data");
     const [gameSnapshot, oppoUserRecord] = await Promise.all([
       gameRef.get(),
@@ -99,58 +134,54 @@ exports.joinGame = functions
     });
 
     batch.commit();
-  });
+}
 
-exports.playCard = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
-    const { gameId, card } = data;
-    const userId = context.auth.uid;
+async function playCard(data, context) {
+  const { gameId, card } = data;
+  const userId = context.auth.uid;
 
-    let gameRef = admin.firestore().collection("games").doc(gameId);
-    let handRef = admin.firestore().collection("hands").doc(userId);
-    const [gameSnapshot, handSnapshot] = await Promise.all([
-      gameRef.get(),
-      handRef.get(),
-    ]);
-    let game = Object.assign({}, gameSnapshot.data());
-    let hand = Object.assign({}, handSnapshot.data());
+  let gameRef = admin.firestore().collection("games").doc(gameId);
+  let handRef = admin.firestore().collection("hands").doc(userId);
+  const [gameSnapshot, handSnapshot] = await Promise.all([
+    gameRef.get(),
+    handRef.get(),
+  ]);
+  let game = Object.assign({}, gameSnapshot.data());
+  let hand = Object.assign({}, handSnapshot.data());
 
-    playCardValidations(game, hand, card, userId);
+  playCardValidations(game, hand, card, userId);
 
-    // actions
-    hand.cards.splice(hand.cards.indexOf(card), 1); // remove the card being played from the hand
-    game.trick = [...game.trick, card];
+  // actions
+  hand.cards.splice(hand.cards.indexOf(card), 1); // remove the card being played from the hand
+  game.trick = [...game.trick, card];
 
-    // sideEffects
-    // change the players turn from the card player to EITHER the other player (if the trick.length is 1)
-    // or the same player if the trick.length == 2 && this player wins the trick.
-    const otherPlayer = game.host === userId ? game.oppo : game.host;
+  // sideEffects
+  // change the players turn from the card player to EITHER the other player (if the trick.length is 1)
+  // or the same player if the trick.length == 2 && this player wins the trick.
+  const otherPlayer = game.host === userId ? game.oppo : game.host;
 
-    if (game.trick.length === 1) {
-      game.currentPlayersTurn = otherPlayer;
-    } else if (game.trick.length === 2) {
-      if (trickWon(game)) {
-        game.currentPlayersTurn = userId;
-      } else {
-        game.currentPlayersTurn = otherPlayer;
-      }
-
-      game.gameState = "draw";
+  if (game.trick.length === 1) {
+    game.currentPlayersTurn = otherPlayer;
+  } else if (game.trick.length === 2) {
+    if (trickWon(game)) {
+      game.currentPlayersTurn = userId;
     } else {
-      throw "played a card but new game.trick.length wasn't 1 or 2";
+      game.currentPlayersTurn = otherPlayer;
     }
 
-    let batch = admin.firestore().batch();
-    batch.update(handRef, hand);
-    batch.update(gameRef, game);
+    game.gameState = "draw";
+  } else {
+    throw "played a card but new game.trick.length wasn't 1 or 2";
+  }
 
-    batch.commit();
-  });
+  let batch = admin.firestore().batch();
+  batch.update(handRef, hand);
+  batch.update(gameRef, game);
 
-exports.drawCard = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
+  batch.commit();
+}
+
+async function drawCard(data, context) {
     const { gameId } = data;
     const userId = context.auth.uid;
 
@@ -208,11 +239,9 @@ exports.drawCard = functions
     batch.update(otherPlayerHandRef, otherPlayerHand);
 
     batch.commit();
-  });
+};
 
-exports.takeCards = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
+async function takeCards(data, context) {
     const { gameId } = data;
     const userId = context.auth.uid;
 
@@ -251,12 +280,9 @@ exports.takeCards = functions
     batch.update(handRef, hand);
 
     batch.commit();
-  });
+};
 
-exports.updateUsernameInGame = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
-
+async function updateUsernameInGame(data, context) {
     let gameRef = admin.firestore().collection("games").doc(data.id);
     const [gameSnapshot, egoUserRecord] = await Promise.all([
       gameRef.get(),
@@ -278,7 +304,7 @@ exports.updateUsernameInGame = functions
     let batch = admin.firestore().batch();
     batch.update(gameRef, game);
     batch.commit();
-  });
+};
 
 function playCardValidations(game, hand, card, userId) {
   if (game.gameState !== "play") {

@@ -9,11 +9,11 @@ export default function CreateGameButton() {
   let { auth } = useContext(Auth);
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
-  const createGame = httpsCallable(functions, "createGame");
+  const gameInteract = httpsCallable(functions, "gameInteract");
 
   const handleCreateGame = () => {
     setIsLoading(true);
-    createGame()
+    gameInteract({func: "createGame"})
       .then((res) => {
         navigate(`game/${res.data.id}`);
       })
