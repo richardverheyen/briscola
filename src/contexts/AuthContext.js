@@ -20,12 +20,17 @@ function AuthHooks() {
   const [promptDisplayNameSent, setPromptDisplayNameSent] = useState(false);
   const [openUsernameModal, setOpenUsernameModal] = useState(false);
 
+  const shouldPromptForDisplayName = () => {
+    const providerIsFirebase = auth.providerId === "firebase";
+    const noCurrentDisplayName = !auth.displayName;
+    return !promptDisplayNameSent && providerIsFirebase && noCurrentDisplayName;
+  }
   if (error) {
     console.error("error logging in", {error});
   }
 
   useEffect(() => {
-    if (auth && !promptDisplayNameSent && !auth.displayName) {
+    if (auth && shouldPromptForDisplayName() && !auth.displayName) {
       setPromptDisplayNameSent(true);
       promptSetUsername(() => setOpenUsernameModal(true));
     }
