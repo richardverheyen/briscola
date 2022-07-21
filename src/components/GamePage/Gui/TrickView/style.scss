@@ -82,18 +82,22 @@
     }
 
     &.center > li {
-        left: 50vw;
+        left: 50%;
+        transform: translate(-50%, 50%);
+        perspective-origin: 0 0;
+
+        @media (max-width: 500px) {
+            left: 50vw;
+            transform: translateY(50%);
+        }
+
 
         &:nth-child(1) > div:before {
-            @media (max-width: 500px) {
-                transform: translate(-50px, -50px);
-            }
+            transform: translate(-50px, -50px);
         }
 
         &:nth-child(2) > div:before {
-            @media (max-width: 500px) {
-                transform: translate(50px, 50px);
-            }
+            transform: translate(50px, 50px);
         }
     }
 }
