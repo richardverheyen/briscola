@@ -25,7 +25,7 @@ function GamePage() {
   return (
     <main id="GamePage">
       <div className="gutters">
-        {game?.gameState === "scoreboard" ? (
+        {game?.gameState === "over" ? (
           <>
             <Button className="scoreboard-button" variant="outlined" onClick={() => setShowScoreboard(true)}>
               Show Scoreboard
