@@ -1,7 +1,6 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { firestore } from "utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { yourTurnToDraw, scoreboardShown } from "utils/toast";
 import { useNavigate } from "react-router-dom";
 import { Auth, AnimationState } from "contexts";
 

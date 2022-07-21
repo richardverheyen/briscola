@@ -6,6 +6,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 import { takeCardError } from "utils/toast";
 
+import StatusView from "./StatusView";
 import HandView from "./HandView";
 import DeckView from "./DeckView";
 import TrickView from "./TrickView";
@@ -37,6 +38,7 @@ function Gui() {
 
   return (
     <div className="Gui">
+      <StatusView />
       <TrickView game={game} takeCards={handleTakeCards} />
 
       <DeckView
