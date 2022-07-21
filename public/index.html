@@ -9,7 +9,7 @@
     <title>Briscola</title>
     <style>
       body {
-        background: linear-gradient(white, #ffefd7);
+        background: #fff8ee;
       }
 
       .transform-point {
@@ -27,7 +27,7 @@
         transform: rotateX(45deg);
         transform-origin: center 100%;
         border-radius: 50%;
-        animation: tableFadeIn ease-out 1s backwards reverse 1;
+        animation: tableFadeIn ease-in 1s backwards reverse 1;
         z-index: -1;
       }
       @keyframes tableFadeIn {
@@ -35,31 +35,31 @@
           transform: rotateX(45deg) translateZ(0px);
         }
         to {
-          transform: rotateX(40deg) translateZ(0px);
+          transform: rotateX(42deg) translateZ(0px);
         }
       }
 
       body > table:before {
         /* table sides */
         content: "";
+        top: 0;
         position: absolute;
         width: inherit;
         height: inherit;
         background: linear-gradient(to right, #908372, #322d28);
         transform: translateZ(-20px);
         border-radius: 50%;
-        z-index: -1;
       }
       body > table:after {
         /* tabletop */
         content: "";
+        top: 0;
         position: absolute;
         width: inherit;
         height: inherit;
-        background: linear-gradient(100deg, #d6c9b6, #b9aea0);
+        background: linear-gradient(100deg, #f5f2ed, #ded7ce);
         transform: translateZ(0px);
         border-radius: 50%;
-        z-index: -1;
       }
     </style>
   </head>

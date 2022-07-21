@@ -87,7 +87,7 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
           style={{
             animationDelay: `${arr.length - i - 1}s`,
             transform: `translateZ(${i * 1.5}px) rotateX(45deg)`,
-            transformOrigin: `50% calc(50% + var(--deck-bottom)) -${i * 1.5}px`,
+            transformOrigin: `50% calc(50% + var(--deck-bottom)) -${i}px`,
             backgroundPosition: i === 0 ? spritePosition(lastCard) : "",
           }}/>
         </li>
