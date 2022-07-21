@@ -11,7 +11,7 @@ import DeckView from "./DeckView";
 import TrickView from "./TrickView";
 
 function Gui() {
-  let { game, isHost, id: gameId } = useContext(Game);
+  let { game, id: gameId } = useContext(Game);
   let { auth } = useContext(Auth);
 
   const gameInteract = httpsCallable(functions, "gameInteract");
@@ -31,31 +31,12 @@ function Gui() {
       });
   };
 
-  function playerWhoseTurnItIs() {
-    if (game.currentPlayersTurn === auth.uid) {
-      return "your";
-    } else if (isHost && game?.oppoDisplayName) {
-      return game?.oppoDisplayName + "'s";
-    } else if (!isHost && game?.hostDisplayName) {
-      return game?.hostDisplayName + "'s";
-    } else {
-      return "their";
-    }
-  }
   if (!game || !auth) {
     return null;
   }
 
   return (
     <div className="Gui">
-      {game.gameState !== "scoreboard" ? (
-        <h2>
-          It's <b>{playerWhoseTurnItIs()}</b> turn to <b>{game.gameState}</b>
-        </h2>
-      ) : (
-        <h2>Game over</h2>
-      )}
-
       <TrickView game={game} takeCards={handleTakeCards} />
 
       <DeckView
