@@ -8,7 +8,7 @@
         width: 124px;
         height: 208px;
         border-radius: 10px;
-        transition: ease 500ms all;
+        transition: ease 1s all;
 
         perspective-origin: calc(-400px + 50%) 0;
 
@@ -29,7 +29,7 @@
         }  
 
         > div {
-            transition: ease 500ms all;
+            transition: ease 1s all;
 
             @media screen and (max-width: 600px) {
                 transform: translateX(50px);
@@ -48,13 +48,13 @@
                 border-radius: 10px;
                 background-color: white;
                 background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
-                box-shadow: 4px 5px 6px rgb(0 0 0 / 10%);
+                box-shadow: 4px 5px 6px rgb(0 0 0 / 6%);
                 border: 4px white solid;  
                 transition: all ease 1s;
                 cursor: pointer;
 
                 @media screen and (max-width: 500px) {
-                    box-shadow: 0px 8px 7px rgb(0 0 0 / 10%);
+                    box-shadow: 0px 8px 7px rgb(0 0 0 / 6%);
                     transform: rotateZ(-24deg);
                 }  
             }

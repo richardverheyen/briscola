@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./style.scss";
 import NavDrawer from "./NavDrawer";
 import IconButton from "@mui/material/IconButton";
@@ -7,7 +7,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 export default function Header() {
   const [navOpen, setNavOpen] = useState(false);
+  const navigate = useNavigate();
+
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    setNavOpen(false);
+  }, [pathname]);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -24,7 +30,7 @@ export default function Header() {
     <header id="header">
       <div className="gutters">
         {
-          pathname === "/rules" ? <Link to="">Return to Home</Link> : null
+          pathname === "/rules" ? <a href="#" onClick={() => navigate(-1)}>Go Back</a> : null
         }
         
         <IconButton aria-label="menu" size="large" onClick={toggleDrawer(true)}>

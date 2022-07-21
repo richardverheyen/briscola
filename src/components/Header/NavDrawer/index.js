@@ -1,6 +1,7 @@
 import "./style.scss";
 import { useContext } from "react";
 import { Auth, Game } from "contexts";
+import { Link } from "react-router-dom";
 
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -38,6 +39,12 @@ export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
           <Button variant="text" onClick={() => setOpenUsernameModal(true)}>
             Update your name
           </Button>
+
+          <Link to="/rules">
+            <Button variant="outlined">
+              Briscola Rules
+            </Button>
+          </Link>
           
         </div>
       </nav>

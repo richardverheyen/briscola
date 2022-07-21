@@ -11,7 +11,7 @@
         width: 124px;
         height: 208px;
         border-radius: 10px;
-        transition: ease 500ms all;
+        transition: ease 1s all;
         transform-origin: 0 100%;
         z-index: auto;
 
@@ -31,7 +31,7 @@
         }  
 
         > div {
-            transition: ease 500ms all;
+            transition: ease 1s all;
             transform: rotateX(45deg);
 
             @media screen and (max-width: 600px) {
@@ -57,7 +57,7 @@
                 background-size: 1300px;
                 border: 4px white solid;
                 cursor: pointer;
-                transition: all ease 500ms;
+                transition: all ease 1s;
 
                 @media (max-width: 500px) {
                     transform: rotateZ(-24deg);
@@ -82,18 +82,22 @@
     }
 
     &.center > li {
-        left: 50vw;
+        left: 50%;
+        transform: translate(-50%, 50%);
+        perspective-origin: 0 0;
+
+        @media (max-width: 500px) {
+            left: 50vw;
+            transform: translateY(50%);
+        }
+
 
         &:nth-child(1) > div:before {
-            @media (max-width: 500px) {
-                transform: translate(-50px, -50px);
-            }
+            transform: translate(-50px, -50px);
         }
 
         &:nth-child(2) > div:before {
-            @media (max-width: 500px) {
-                transform: translate(50px, 50px);
-            }
+            transform: translate(50px, 50px);
         }
     }
 }

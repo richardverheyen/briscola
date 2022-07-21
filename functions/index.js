@@ -267,7 +267,7 @@ async function takeCards(data, context) {
     });
 
     if (hand.cards.length === 0 && private.deck.length === 0) {
-      game.gameState = "scoreboard";
+      game.gameState = "over";
 
       // make the won and drawn lists available to the scoreboard
       game.won = private.won;
