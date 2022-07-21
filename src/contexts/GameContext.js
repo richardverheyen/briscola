@@ -13,6 +13,9 @@ export const Game = createContext({
   game: undefined,
   setId: () => {},
   isHost: undefined,
+  isTurn: undefined,
+  enemyId: undefined,
+  enemyName: undefined,
   quitGame: () => {},
 });
 
@@ -21,6 +24,9 @@ function GameHooks() {
   const { auth } = useContext(Auth);
   let navigate = useNavigate();
   const [isHost, setIsHost] = useState(false);
+  const [isTurn, setIsTurn] = useState(false);
+  const [enemyId, setEnemyId] = useState(false);
+  const [enemyName, setEnemyName] = useState(false);
   const [id, setId] = useState(undefined);
   const [game, setGame] = useState(undefined);
   const [gameSnapshot, setGameSnapshot] = useState(undefined);
@@ -46,41 +52,45 @@ function GameHooks() {
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
 
-      if (!game) {
+      if (!game && auth.uid !== gameData.host) {
         // it's a new game for this session/device
-        initEgo(gameData);
+        gameInteract({ id, func: "joinGame" })
+          .then((res) => {
+            console.log("Joined game as opposition!", { res });
+          })
+          .catch((err) => {
+            console.error("Join Game Failed", { err });
+          });
       }
 
-      yourTurnToDraw(gameData, auth.uid);
-      scoreboardShown(gameData, auth.uid);
-
       setGame(gameData);
+
+      const newIsHost = gameData.host === auth.uid;
+      const newIsTurn = gameData.currentPlayersTurn === auth.uid;
+      const newEnemyId = newIsHost ? gameData.oppo : gameData.host;
+      const newEnemyName = newIsHost ? gameData.oppoDisplayName || "" : gameData.hostDisplayName || "";
+
+      setIsHost(newIsHost);
+      setIsTurn(newIsTurn);
+      setEnemyId(newEnemyId);
+      setEnemyName(newEnemyName);
+
     } else if (!gameSnapshot && id) {
       setGame(undefined);
       setIsHost(undefined);
       navigate("/");
+      document.title = "Briscola";
     }
   }, [gameSnapshot, playCardAnimationRunning]);
-
-  function initEgo(gameData) {
-    if (auth.uid === gameData.host) {
-      setIsHost(true);
-    } else {
-      gameInteract({ id, func: "joinGame" })
-        .then((res) => {
-          console.log("Joined game as opposition!", { res });
-        })
-        .catch((err) => {
-          console.error("Join Game Failed", { err });
-        });
-    }
-  }
 
   return {
     id,
     setId,
     game,
     isHost,
+    isTurn,
+    enemyId,
+    enemyName,
     quitGame,
   };
 }
