@@ -29,7 +29,7 @@ export function promptSetUsername(openModal) {
         Would you like to quickly{" "}
         <a
           style={{ textDecoration: "underline", cursor: "pointer" }}
-
+          href="#"
           onClick={() => {
             openModal();
             toast.dismiss(t.id);
