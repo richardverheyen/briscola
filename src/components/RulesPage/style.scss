@@ -15,5 +15,11 @@ main#RulesPage {
         > h1, > h2 {
             margin: 0 auto 20px;
         }
+
+        .back {
+            text-decoration: underline;
+            cursor: pointer;
+            user-select: none;
+        }
     }
 }

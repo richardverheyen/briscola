@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./style.scss";
-import NavDrawer from "./NavDrawer";
+import { useEffect, useState, Suspense, lazy } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+
+const NavDrawer = lazy(() => import("./NavDrawer"));
 
 export default function Header() {
   const [navOpen, setNavOpen] = useState(false);
@@ -30,13 +31,17 @@ export default function Header() {
     <header id="header">
       <div className="gutters">
         {
-          pathname === "/rules" ? <a href="#" onClick={() => navigate(-1)}>Go Back</a> : null
+          pathname === "/rules" ? <p className="back" onClick={() => navigate(-1)}>Go Back</p> : null
         }
         
         <IconButton aria-label="menu" size="large" onClick={toggleDrawer(true)}>
           <MenuIcon />
         </IconButton>
-        <NavDrawer toggleDrawer={toggleDrawer} navOpen={navOpen} />
+        <Suspense fallback={null}>
+          <NavDrawer toggleDrawer={toggleDrawer} navOpen={navOpen} />
+        </Suspense>
+
+        
       </div>
     </header>
   );
