@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Auth, Game } from "contexts";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -15,7 +15,7 @@ import { functions } from "utils/firebase";
 
 export default function UsernameModal() {
   const gameInteract = httpsCallable(functions, "gameInteract");
-  const { auth, user, openUsernameModal, setOpenUsernameModal } =
+  const { auth, openUsernameModal, setOpenUsernameModal } =
     useContext(Auth);
   const { id, game } = useContext(Game);
 

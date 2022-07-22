@@ -5,7 +5,7 @@ import { wonArrToTotalScore } from "utils/helpers";
 
 export default function StatusView() {
   const { auth } = useContext(Auth);
-  const { game, isHost, isTurn, enemyId, enemyName } = useContext(Game);
+  const { game, isTurn, enemyId, enemyName } = useContext(Game);
   const [status, setStatus] = useState("");
   const [reviveToast, setReviveToast] = useState(undefined);
 

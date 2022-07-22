@@ -14,7 +14,6 @@ function Router() {
 
     const appHeight = () => {
       const vh = window.innerHeight;
-      const vw = window.innerWidth;
       const hingePoint = 0.15 * vh;
       const hingePointInverse = -0.15 * vh;
       const deckBottom = (window.innerWidth < 500 ? 0.75 : 0.5) * vh;

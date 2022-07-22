@@ -13,5 +13,11 @@ header#header {
         button[aria-label=menu] {
             margin-left: auto;
         }
+
+        .back {
+            text-decoration: underline;
+            user-select: none;
+            cursor: pointer;
+        }
     }
 }
