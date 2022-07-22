@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Providers } from "contexts";
 import { Toaster } from 'react-hot-toast';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import Router from "router";
 import Header from "components/Header";
@@ -19,3 +20,5 @@ root.render(
     </Providers>
   </React.StrictMode>
 );
+
+serviceWorkerRegistration.register();
