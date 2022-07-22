@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "briscola-fp"
-  }
+    "default": "briscola-beta",
+    "production": "briscola-beta"
+  },
+  "targets": {}
 }
