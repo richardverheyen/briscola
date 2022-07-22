@@ -47,7 +47,7 @@
                 box-sizing: border-box;
                 border-radius: 10px;
                 background-color: white;
-                background: center/100px 30px no-repeat url("../floatplane-logo.png"), center/18px repeat url("../floatplane.png"), white;
+                background: center/100px 30px no-repeat url("../floatplane-logo.webp"), center/18px repeat url("../floatplane.webp"), white;
                 box-shadow: 4px 5px 6px rgb(0 0 0 / 6%);
                 border: 4px white solid;  
                 transition: all ease 1s;
@@ -65,7 +65,7 @@
                 background-position: inherit;
 
             &:before {
-                background-image: url('../sprite.jpg');
+                background-image: url('../sprite.webp');
                 background-repeat: no-repeat;
                 background-size: 1300px;
                 background-position: inherit;
