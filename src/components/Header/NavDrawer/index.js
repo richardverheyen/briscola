@@ -7,6 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import github from "./github.png";
 
 export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
   const { auth, setOpenUsernameModal } = useContext(Auth);
@@ -25,13 +26,16 @@ export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
             <CloseIcon />
           </IconButton>
 
-          <div className="name">Hi {auth?.displayName}</div>
+          <div className="name">{auth?.displayName ? `Hi ${auth?.displayName}` : null}</div>
 
           {game && (
-            <Button variant="contained" onClick={(e) => {
-              quitGame();
-              toggleDrawer(false)(e);
-            }}>
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                quitGame();
+                toggleDrawer(false)(e);
+              }}
+            >
               Quit Game
             </Button>
           )}
@@ -41,11 +45,17 @@ export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
           </Button>
 
           <Link to="/rules">
-            <Button variant="outlined">
-              Briscola Rules
-            </Button>
+            <Button variant="text">Briscola Rules</Button>
           </Link>
-          
+
+          <a
+            className="github-link"
+            href="https://github.com/richardverheyen/briscola"
+            title="Github repository"
+            target="_blank"
+          >
+            <img src={github} alt="github" width="48" />
+          </a>
         </div>
       </nav>
     </Drawer>
