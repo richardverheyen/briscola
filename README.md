@@ -1,5 +1,9 @@
 # Briscola by Richard Verheyen
-Live test environment: https://briscola-fp.web.app/
+Live test environment: https://briscola-beta.web.app/
+
+![alt text](https://github.com/richardverheyen/briscola/blob/master/public/images/example1.PNG?raw=true)
+
+
 ## Available Scripts
 
 In the project directory, you can run:
