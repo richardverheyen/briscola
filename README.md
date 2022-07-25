@@ -1,7 +1,12 @@
 # Briscola by Richard Verheyen
 Live test environment: https://briscola-beta.web.app/
 
-![alt text](https://github.com/richardverheyen/briscola/blob/master/public/images/example1.PNG?raw=true)
+<p style="display: flex;">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example1.PNG?raw=true" width="180">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example2.PNG?raw=true" width="180">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example3.PNG?raw=true" width="180">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example4.PNG?raw=true" width="180">
+</p>
 
 
 ## Available Scripts
