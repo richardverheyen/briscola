@@ -1,4 +1,7 @@
 import "./style.scss";
+import { useContext } from "react";
+import { Game, Auth } from "contexts";
+
 import { wonArrToTotalScore } from "utils/helpers";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,18 +12,30 @@ import TrickChart from "./TrickChart";
 
 import Button from "@mui/material/Button";
 
-function Scoreboard({ game, showScoreboard, handleClose }) {
-  const hostScore = wonArrToTotalScore(game?.won, game.host);
-  const oppoScore = wonArrToTotalScore(game?.won, game.oppo);
+function Scoreboard({ showScoreboard, handleClose }) {
+  const { auth } = useContext(Auth);
+  const { game, enemyId, enemyName } = useContext(Game);
 
   const title = () => {
-    if (hostScore === oppoScore) {
-      return "It was a tie! 60 - 60";
-    } else if (hostScore > oppoScore) {
-      return `${game.hostDisplayName || "Host"} won with a score of ${hostScore} - ${oppoScore}`;
-    } else {
-      return `${game.oppoDisplayName || "Opponent"} won with a score of ${oppoScore} - ${hostScore}`;
+    let message, emoji;
+    const egoScore = wonArrToTotalScore(game.won, auth.uid);
+    const enemyScore = wonArrToTotalScore(game.won, enemyId);
+
+    if (egoScore === 60) {
+      message = "The game was a tie! 60 - 60.";
+      emoji = "👏";
+      document.title = "Briscola 👏";
+    } else if (egoScore < 60) {
+      message = `${enemyName} won with a score of ${enemyScore} - ${egoScore}.`;
+      emoji = "👏";
+      document.title = "Briscola 👏";
+    } else if (egoScore > 60) {
+      message = `You won with a score of ${egoScore} - ${enemyScore}.`;
+      emoji = "🎉";
+      document.title = "Briscola 🎉";
     }
+
+    return `${message} ${emoji}`;
   };
 
   return (
