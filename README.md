@@ -6,7 +6,7 @@
 </p>
 
 # Briscola by Richard Verheyen
-Live test environment: https://briscola-fp.web.app/
+Live test environment: https://brisco.la/
 
 I built this app so I could have the option to play briscola against my family and friends with consistently randomised cards and some analytics after each game. There will always be more features to add, but for the time being I'm happy with where it's at, as it's only been a holiday project for me. 
 This project gave me the opportunity to learn more about Firebase's Firestore database, Firebase Functions and Firebase Auth. I chose React as the framework to build it in, because although the initial load time will be slower, I didn't want to introduce more complications when focusing on the game usability. Some things I'm proud of here are the 3d css transformations, realtime updates and that it's a Progressive Web App. 
