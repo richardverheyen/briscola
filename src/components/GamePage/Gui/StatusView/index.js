@@ -56,7 +56,7 @@ export default function StatusView() {
           newToastEmoji = "👏";
           document.title = "Briscola 👏";
         } else if (egoScore < 60) {
-          newToastMessage = `${enemyName} won with a score of ${enemyScore} - ${egoScore}.`;
+          newToastMessage = `${enemyName || "Your opponent"} won with a score of ${enemyScore} - ${egoScore}.`;
           newToastEmoji = "👏";
           document.title = "Briscola 👏";
         } else if (egoScore > 60) {

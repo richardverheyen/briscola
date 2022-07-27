@@ -26,7 +26,7 @@ function Scoreboard({ showScoreboard, handleClose }) {
       emoji = "👏";
       document.title = "Briscola 👏";
     } else if (egoScore < 60) {
-      message = `${enemyName} won with a score of ${enemyScore} - ${egoScore}.`;
+      message = `${enemyName || "Your opponent"} won with a score of ${enemyScore} - ${egoScore}.`;
       emoji = "👏";
       document.title = "Briscola 👏";
     } else if (egoScore > 60) {
@@ -43,7 +43,6 @@ function Scoreboard({ showScoreboard, handleClose }) {
       <DialogTitle>Scoreboard</DialogTitle>
       <DialogContent>
         <DialogContentText>{title()}</DialogContentText>
-
         <TrickChart game={game} />
 
       </DialogContent>
