@@ -100,4 +100,17 @@
             transform: translate(50px, 50px);
         }
     }
+
+    &.prompt li > div:before {
+        animation: prompt 1s infinite linear alternate;
+
+        @keyframes prompt {
+            from {
+                outline: solid 2px #1976d2;
+            }
+            to {
+                outline: solid 6px #1976d2;
+            }
+        }
+    }
 }

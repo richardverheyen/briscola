@@ -1,14 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { spritePosition } from "utils/helpers";
 import "./style.scss";
 
+import { Game, Auth } from "contexts";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "utils/firebase";
 import { drawCardError } from "utils/toast";
 
-function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
+function DeckView() {
+  const { game, isTurn, id: gameId} = useContext(Game);
+  const { auth } = useContext(Auth);
   let [shownCards, setShownCards] = useState([]);
   let [lastAnimationUnix, setLastAnimationUnix] = useState(null);
+  let [promptTimeout, setPromptTimeout] = useState(undefined);
   let deckViewEl = useRef();
   const gameInteract = httpsCallable(functions, "gameInteract");
 
@@ -19,6 +23,23 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
   useEffect(() => {
     setShownCards([...Array(game.deckHeight)]);
   }, []);
+
+  useEffect(() => {
+    deckViewEl.current.classList.remove("prompt");
+
+    if (game.gameState === "draw" && isTurn) {
+      window.clearTimeout(promptTimeout);
+      setPromptTimeout(undefined);
+      const timeout = window.setTimeout(() => {
+        deckViewEl.current.classList.add("prompt");
+        document.title = `Briscola ❗`;
+      }, 5000);
+
+      setPromptTimeout(timeout);
+    } else if (promptTimeout) {
+      window.clearTimeout(promptTimeout);
+    }
+  }, [game, isTurn]);
 
   useEffect(() => {
     // if there are cards to animate and there is a deckHeight change to animate / set
@@ -64,6 +85,7 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
       return;
     }
 
+    deckViewEl.current.classList.remove("prompt");
     deckViewEl.current.classList.add("animate");
     // start animation. the animate class is removed in the useEffect Hook once
     // 2000 ms have elapsed (tracked by lastAnimationUnix)
@@ -83,12 +105,12 @@ function DeckView({ auth, game, gameId, deckHeight, lastCard }) {
           key={i}
           onClick={(e) => handleDrawCard(e, i)}
         >
-        <div 
+        <div
           style={{
-            animationDelay: `${arr.length - i - 1}s`,
+            transitionDelay: `${arr.length - i - 1}s`,
             transform: `translateZ(${i * 1.5}px) rotateX(45deg)`,
             transformOrigin: `50% calc(50% + var(--deck-bottom)) -${i}px`,
-            backgroundPosition: i === 0 ? spritePosition(lastCard) : "",
+            backgroundPosition: i === 0 ? spritePosition(game.lastCard) : "",
           }}/>
         </li>
       ))}

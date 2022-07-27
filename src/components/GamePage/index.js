@@ -37,7 +37,6 @@ function GamePage() {
             </Button>
             <Suspense fallback={null}>
               <Scoreboard
-                game={game}
                 showScoreboard={showScoreboard}
                 handleClose={() => setShowScoreboard(false)}
               />
