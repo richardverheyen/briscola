@@ -80,19 +80,26 @@
             }
         }
     }
-    
+    &.prompt li:nth-last-child(1) > div:before {
+        animation: prompt 1s infinite linear alternate;
+
+        @keyframes prompt {
+            from {
+                outline: solid 2px #1976d2;
+            }
+            to {
+                outline: solid 6px #1976d2;
+            }
+        }
+    }
     
     &.animate li:nth-last-child(1) > div,
     &.animate li:nth-last-child(2) > div {
-        animation-delay: inherit;
+        transition-delay: inherit;
 
         &:before {
-            animation-duration: 1s;
-            animation-timing-function: ease;
-            animation-iteration-count: 1;
-            animation-direction: normal;
-            animation-fill-mode: forwards;
-            animation-delay: inherit;
+            transition-duration: 1s;
+            transition-timing-function: ease;
         }
     }
 

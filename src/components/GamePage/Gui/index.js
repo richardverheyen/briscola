@@ -40,15 +40,7 @@ function Gui() {
     <div className="Gui">
       <StatusView />
       <TrickView game={game} takeCards={handleTakeCards} />
-
-      <DeckView
-        auth={auth}
-        game={game}
-        gameId={gameId}
-        deckHeight={game.deckHeight}
-        lastCard={game.lastCard}
-      />
-
+      <DeckView />
       <HandView />
     </div>
   );
