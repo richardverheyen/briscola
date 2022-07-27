@@ -12,7 +12,6 @@ function DeckView() {
   const { auth } = useContext(Auth);
   let [shownCards, setShownCards] = useState([]);
   let [lastAnimationUnix, setLastAnimationUnix] = useState(null);
-  let [prompt, setPrompt] = useState(undefined);
   let [promptTimeout, setPromptTimeout] = useState(undefined);
   let deckViewEl = useRef();
   const gameInteract = httpsCallable(functions, "gameInteract");
