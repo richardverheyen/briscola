@@ -81,6 +81,27 @@ export const wonArrToTotalScore = (arr, playerId) => {
   );
 };
 
+export const drawnToPlayerValueDrawn = (drawn, playerId) => {
+  let drawnByThisPlayer = drawn.filter((record) => record.player === playerId);
+
+  return drawnByThisPlayer.reduce(
+    (acc, record) => acc + cardToPower(record.card),
+    0
+  );
+};
+
+export const gameToPlayerBriscolaDrawn = (game, playerId) => {
+  let drawnByThisPlayer = game?.drawn.filter((record) => record.player === playerId);
+
+  return drawnByThisPlayer?.reduce(
+    (acc, record) => {
+      const isBriscola = cardToSuit(record.card) === game?.trumps ? 1 : 0;
+      return acc + isBriscola;
+    },
+    0
+  );
+};
+
 export const winningCardFromArray = (arr, game) => trickWon(arr[0], arr[1], game) ? arr[1] : arr[0];
 
 function cardToSuit(num) {

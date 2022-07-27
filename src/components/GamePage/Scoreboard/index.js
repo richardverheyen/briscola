@@ -2,7 +2,7 @@ import "./style.scss";
 import { useContext } from "react";
 import { Game, Auth } from "contexts";
 
-import { wonArrToTotalScore } from "utils/helpers";
+import { wonArrToTotalScore, gameToPlayerBriscolaDrawn, drawnToPlayerValueDrawn } from "utils/helpers";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -39,12 +39,21 @@ function Scoreboard({ showScoreboard, handleClose }) {
   };
 
   return (
+    game && 
     <Dialog open={showScoreboard} onClose={handleClose} fullWidth={true}>
       <DialogTitle>Scoreboard</DialogTitle>
       <DialogContent>
         <DialogContentText>{title()}</DialogContentText>
         <TrickChart game={game} />
+      </DialogContent>
 
+      <DialogTitle>Cards Drawn</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{`${auth.displayName || "Your"} card value drawn: ${drawnToPlayerValueDrawn(game.drawn, auth.uid)}`}</DialogContentText>
+        <DialogContentText>{`${auth.displayName || "Your"} number of Briscola drawn: ${gameToPlayerBriscolaDrawn(game, auth.uid)}`}</DialogContentText>
+        
+        <DialogContentText>{`${enemyName || "Your opponent's"} card value drawn: ${drawnToPlayerValueDrawn(game.drawn, enemyId)}`}</DialogContentText>
+        <DialogContentText>{`${enemyName || "Your opponent's"} number of Briscola drawn: ${gameToPlayerBriscolaDrawn(game, enemyId)}`}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
