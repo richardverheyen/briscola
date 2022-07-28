@@ -27,9 +27,9 @@
     ],
     "start_url": "/",
     "scope": ".",
-    "background_color": "#fff8ee",
+    "background_color": "#fbfbfb",
     "display": "standalone",
-    "theme_color": "#fff8ee",
+    "theme_color": "#fbfbfb",
     "shortcuts": [],
     "screenshots": [
       {
