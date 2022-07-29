@@ -7,6 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import * as serviceWorkerRegistration from 'serviceWorkerRegistration';
 import github from "./github.png";
 
 export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
@@ -47,6 +48,10 @@ export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
           <Link to="/rules">
             <Button variant="text">Briscola Rules</Button>
           </Link>
+
+          <Button variant="text" onClick={serviceWorkerRegistration.unregister}>
+            Upgrade to latest version
+          </Button>
 
           <a
             className="github-link"
