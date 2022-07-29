@@ -13,17 +13,6 @@ div.Gui {
         margin-left: calc(-0.5 * var(--doc-height));
         transform: rotateX(45deg);
         transform-origin: center 100%;
-        border-radius: 50%;
-        animation: tableFadeIn ease-in 1s backwards reverse 1;
-        z-index: -1;
-      }
-      @keyframes tableFadeIn {
-        from {
-          transform: rotateX(45deg) translateZ(0px);
-        }
-        to {
-          transform: rotateX(42deg) translateZ(0px);
-        }
       }
 
       table:before {
