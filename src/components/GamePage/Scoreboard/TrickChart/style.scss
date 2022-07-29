@@ -22,10 +22,10 @@
     background-size: calc(1300px / 1.5);
 }
 
-#TrickChart,
-.sprite-carte-piacentine #TrickChart {
+.Scoreboard-card,
+.sprite-carte-piacentine .Scoreboard-card {
     background-image: url('../../sprite-carte-piacentine.webp');
 }
-.sprite-napoletane #TrickChart {
+.sprite-napoletane .Scoreboard-card {
     background-image: url('../../sprite-napoletane.webp');
 }
