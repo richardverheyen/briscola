@@ -11,7 +11,7 @@ const Gui = lazy(() => import("./Gui"));
 
 function GamePage() {
   let { id } = useParams();
-  let { game, setId, isHost } = useContext(Game);
+  let { game, setId, isHost, sprite } = useContext(Game);
   let [showScoreboard, setShowScoreboard] = useState(true);
 
   // sets the Game context with the id from the URL (for both host and oppo)
@@ -24,7 +24,7 @@ function GamePage() {
   }
 
   return (
-    <main id="GamePage">
+    <main id="GamePage" className={`sprite-${sprite}`}>
       <div className="gutters">
         {game?.gameState === "over" ? (
           <>

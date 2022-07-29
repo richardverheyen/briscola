@@ -22,6 +22,7 @@ function GameHooks() {
   let { playCardAnimationRunning } = useContext(AnimationState);
   const { auth } = useContext(Auth);
   let navigate = useNavigate();
+  const [sprite, setSprite] = useState(window.localStorage.getItem("sprite") || "napoletane");
   const [isHost, setIsHost] = useState(false);
   const [isTurn, setIsTurn] = useState(false);
   const [enemyId, setEnemyId] = useState(false);
@@ -34,6 +35,11 @@ function GameHooks() {
 
   // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
   const quitGame = () => setGameSnapshot(undefined);
+
+  function updateSprite(str) {
+    window.localStorage.setItem("sprite", str);
+    setSprite(str);
+  }
 
   useEffect(() => {
     if (id) {
@@ -91,6 +97,8 @@ function GameHooks() {
     enemyId,
     enemyName,
     quitGame,
+    updateSprite,
+    sprite
   };
 }
 
