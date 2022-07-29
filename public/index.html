@@ -32,56 +32,10 @@
         transform-style: preserve-3d;
         perspective: calc(2 * var(--doc-height));
       }
-
-      body > table {
-        position: fixed;
-        left: 50%;
-        bottom: var(--hinge-point);
-        width: var(--doc-height);
-        height: var(--doc-height);
-        margin-left: calc(-0.5 * var(--doc-height));
-        transform: rotateX(45deg);
-        transform-origin: center 100%;
-        border-radius: 50%;
-        animation: tableFadeIn ease-in 1s backwards reverse 1;
-        z-index: -1;
-      }
-      @keyframes tableFadeIn {
-        from {
-          transform: rotateX(45deg) translateZ(0px);
-        }
-        to {
-          transform: rotateX(42deg) translateZ(0px);
-        }
-      }
-
-      body > table:before {
-        /* table sides */
-        content: "";
-        top: 0;
-        position: absolute;
-        width: inherit;
-        height: inherit;
-        background: linear-gradient(to right, #908372, #322d28);
-        transform: translateZ(-20px);
-        border-radius: 50%;
-      }
-      body > table:after {
-        /* tabletop */
-        content: "";
-        top: 0;
-        position: absolute;
-        width: inherit;
-        height: inherit;
-        background: linear-gradient(100deg, #f5f2ed, #ded7ce);
-        transform: translateZ(0px);
-        border-radius: 50%;
-      }
     </style>
   </head>
 
   <body>
-    <table class="transform-point"></table>
     <div id="root"></div>
   </body>
 </html>

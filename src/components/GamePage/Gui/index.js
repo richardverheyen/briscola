@@ -38,6 +38,7 @@ function Gui() {
 
   return (
     <div className="Gui">
+      <table className="transform-point" />
       <StatusView />
       <TrickView game={game} takeCards={handleTakeCards} />
       <DeckView />
