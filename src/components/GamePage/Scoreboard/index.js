@@ -90,6 +90,12 @@ function Scoreboard({ showScoreboard, handleClose }) {
 
         <DialogTitle>Cards Held</DialogTitle>
         <DialogContent>
+          <DialogContentText>
+            <span>Your cards</span>
+            <span style={{ float: "right" }}>{`${
+              enemyName || "Your opponent"
+            }'s cards`}</span>
+          </DialogContentText>
           <HeldChart game={game} auth={auth} />
         </DialogContent>
 

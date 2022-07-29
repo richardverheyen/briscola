@@ -68,7 +68,7 @@ export default function HeldChart({ game, auth }) {
       xmlns="http://www.w3.org/2000/svg"
     >
       {drawnToPaths().map((path, i) => (
-        <>
+        <g key={i}>
           <text className="start" x={path.textX} y={path.startTextY} textAnchor="middle">
             {cardToName(path.card)}
           </text>
@@ -76,7 +76,7 @@ export default function HeldChart({ game, auth }) {
             {cardToName(path.card)}
           </text>
           <path
-            key={i}
+            
             stroke="black"
             fill="none"
             strokeWidth="1.2"
@@ -84,10 +84,10 @@ export default function HeldChart({ game, auth }) {
             strokeLinejoin="round"
             d={path.d}
           />
-        </>
+        </g>
       ))}
       {[...Array(20)].map((n, i) => (
-        <text x="0" y={i * 60} textAnchor="middle">
+        <text key={i} x="0" y={i * 60} textAnchor="middle">
           {i + 1}
         </text>
       ))}
