@@ -2,13 +2,18 @@ import "./style.scss";
 import { useContext } from "react";
 import { Game, Auth } from "contexts";
 
-import { wonArrToTotalScore } from "utils/helpers";
+import {
+  wonArrToTotalScore,
+  gameToPlayerBriscolaDrawn,
+  drawnToPlayerValueDrawn,
+} from "utils/helpers";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TrickChart from "./TrickChart";
+import HeldChart from "./HeldChart";
 
 import Button from "@mui/material/Button";
 
@@ -26,7 +31,9 @@ function Scoreboard({ showScoreboard, handleClose }) {
       emoji = "👏";
       document.title = "Briscola 👏";
     } else if (egoScore < 60) {
-      message = `${enemyName} won with a score of ${enemyScore} - ${egoScore}.`;
+      message = `${
+        enemyName || "Your opponent"
+      } won with a score of ${enemyScore} - ${egoScore}.`;
       emoji = "👏";
       document.title = "Briscola 👏";
     } else if (egoScore > 60) {
@@ -39,18 +46,58 @@ function Scoreboard({ showScoreboard, handleClose }) {
   };
 
   return (
-    <Dialog open={showScoreboard} onClose={handleClose} fullWidth={true}>
-      <DialogTitle>Scoreboard</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{title()}</DialogContentText>
+    game && (
+      <Dialog
+        open={showScoreboard}
+        onClose={handleClose}
+        fullWidth={true}
+        scroll="body"
+      >
+        <DialogTitle>Scoreboard</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{title()}</DialogContentText>
+          <TrickChart game={game} />
+        </DialogContent>
 
-        <TrickChart game={game} />
+        <DialogTitle>Cards Drawn</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{`${
+            auth.displayName || "Your"
+          } card value drawn: ${drawnToPlayerValueDrawn(
+            game.drawn,
+            auth.uid
+          )}`}</DialogContentText>
+          <DialogContentText>{`${
+            auth.displayName || "Your"
+          } number of Briscola drawn: ${gameToPlayerBriscolaDrawn(
+            game,
+            auth.uid
+          )}`}</DialogContentText>
 
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
+          <DialogContentText>{`${
+            enemyName || "Your opponent's"
+          } card value drawn: ${drawnToPlayerValueDrawn(
+            game.drawn,
+            enemyId
+          )}`}</DialogContentText>
+          <DialogContentText>{`${
+            enemyName || "Your opponent's"
+          } number of Briscola drawn: ${gameToPlayerBriscolaDrawn(
+            game,
+            enemyId
+          )}`}</DialogContentText>
+        </DialogContent>
+
+        <DialogTitle>Cards Held</DialogTitle>
+        <DialogContent>
+          <HeldChart game={game} auth={auth} />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    )
   );
 }
 

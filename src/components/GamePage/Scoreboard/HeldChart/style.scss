@@ -1,0 +1,15 @@
+#HeldChart {
+    text {
+        font-size: 12px;
+        transform: translateY(-6px);
+
+        &.start {
+            font-size: 8px;
+            transform: translateY(11px);
+        }
+        &.end {
+            font-size: 8px;
+            transform: translateY(-4px);
+        }
+    }
+}
