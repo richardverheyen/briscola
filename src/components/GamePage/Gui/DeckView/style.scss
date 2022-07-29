@@ -8,7 +8,6 @@
         width: 124px;
         height: 208px;
         border-radius: 10px;
-        transition: ease 1s all;
 
         perspective-origin: calc(-400px + 50%) 0;
 
@@ -23,14 +22,10 @@
         
         @media (max-width: 500px) {
             perspective-origin: calc(-15vw + 50%) 50vh;
-            // perspective-origin: 0 20vh; 
-            
             transform: translateY(50%) translateX(25%);
         }  
 
         > div {
-            transition: ease 1s all;
-
             @media screen and (max-width: 600px) {
                 transform: translateX(50px);
             }
@@ -50,7 +45,6 @@
                 background: center/100px 30px no-repeat url("../floatplane-logo.webp"), center/18px repeat url("../floatplane.webp"), white;
                 box-shadow: 4px 5px 6px rgb(0 0 0 / 6%);
                 border: 4px white solid;  
-                transition: all ease 1s;
                 cursor: pointer;
 
                 @media screen and (max-width: 500px) {
@@ -95,6 +89,7 @@
     
     &.animate li:nth-last-child(1) > div,
     &.animate li:nth-last-child(2) > div {
+        transition: all ease 1s;
         transition-delay: inherit;
 
         &:before {
