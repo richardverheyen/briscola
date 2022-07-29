@@ -59,7 +59,7 @@
                 background-position: inherit;
 
             &:before {
-                background-image: url('../sprite.webp');
+                // background-image: url('../sprite.webp');
                 background-repeat: no-repeat;
                 background-size: 1300px;
                 background-position: inherit;
@@ -113,4 +113,12 @@
     &.animate.reverse li:nth-last-child(2) > div:before {
         transform: rotateZ(0deg) translateY(250px);
     }
+}
+
+.DeckView > li:first-child > div:before,
+.sprite-carte-piacentine .DeckView > li:first-child > div:before {
+    background-image: url('../../sprite-carte-piacentine.webp');
+}
+.sprite-napoletane .DeckView > li:first-child > div:before {
+    background-image: url('../../sprite-napoletane.webp');
 }
