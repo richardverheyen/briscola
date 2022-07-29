@@ -68,7 +68,7 @@ export default function HeldChart({ game, auth }) {
   return (
     <svg
       id="HeldChart"
-      viewBox="-140 -130 280 1330"
+      viewBox="-140 -130 280 1270"
       xmlns="http://www.w3.org/2000/svg"
     >
       {drawnToPaths().map((path, i) => (
