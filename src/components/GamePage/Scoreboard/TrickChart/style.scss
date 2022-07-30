@@ -17,7 +17,15 @@
     display: inline-block;
     width: calc(116px / 1.5);
     height: calc(200px / 1.5);
-    background-image: url('../../Gui/sprite.jpg');
+    // background-image: url('../../Gui/sprite.jpg');
     background-repeat: no-repeat;
     background-size: calc(1300px / 1.5);
+}
+
+.Scoreboard-card,
+.sprite-carte-piacentine .Scoreboard-card {
+    background-image: url('../../sprite-carte-piacentine.webp');
+}
+.sprite-napoletane .Scoreboard-card {
+    background-image: url('../../sprite-napoletane.webp');
 }

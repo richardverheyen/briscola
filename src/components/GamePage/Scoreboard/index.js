@@ -19,7 +19,7 @@ import Button from "@mui/material/Button";
 
 function Scoreboard({ showScoreboard, handleClose }) {
   const { auth } = useContext(Auth);
-  const { game, enemyId, enemyName } = useContext(Game);
+  const { game, enemyId, enemyName, sprite } = useContext(Game);
 
   const title = () => {
     let message, emoji;
@@ -52,6 +52,7 @@ function Scoreboard({ showScoreboard, handleClose }) {
         onClose={handleClose}
         fullWidth={true}
         scroll="body"
+        className={`sprite-${sprite}`}
       >
         <DialogTitle>Scoreboard</DialogTitle>
         <DialogContent>
@@ -90,6 +91,12 @@ function Scoreboard({ showScoreboard, handleClose }) {
 
         <DialogTitle>Cards Held</DialogTitle>
         <DialogContent>
+          <DialogContentText>
+            <span>Your cards</span>
+            <span style={{ float: "right" }}>{`${
+              enemyName || "Your opponent"
+            }'s cards`}</span>
+          </DialogContentText>
           <HeldChart game={game} auth={auth} />
         </DialogContent>
 
