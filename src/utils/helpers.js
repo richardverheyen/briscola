@@ -85,7 +85,7 @@ export const drawnToPlayerValueDrawn = (drawn, playerId) => {
   let drawnByThisPlayer = drawn.filter((record) => record.player === playerId);
 
   return drawnByThisPlayer.reduce(
-    (acc, record) => acc + cardToPower(record.card),
+    (acc, record) => acc + cardToScore(record.card),
     0
   );
 };
