@@ -5,13 +5,14 @@ import Button from "@mui/material/Button";
 
 import { Game } from "contexts";
 import QrCode from "./QrCode";
+import RematchButton from "./RematchButton";
 
 const Scoreboard = lazy(() => import("./Scoreboard"));
 const Gui = lazy(() => import("./Gui"));
 
 function GamePage() {
   let { id } = useParams();
-  let { game, setId, isHost } = useContext(Game);
+  let { game, setId, isHost, sprite } = useContext(Game);
   let [showScoreboard, setShowScoreboard] = useState(true);
 
   // sets the Game context with the id from the URL (for both host and oppo)
@@ -24,17 +25,21 @@ function GamePage() {
   }
 
   return (
-    <main id="GamePage">
+    <main id="GamePage" className={`sprite-${sprite}`}>
       <div className="gutters">
         {game?.gameState === "over" ? (
           <>
             <Button
               className="scoreboard-button"
               variant="outlined"
+              size="large"
               onClick={() => setShowScoreboard(true)}
             >
               Show Scoreboard
             </Button>
+
+            <RematchButton />
+
             <Suspense fallback={null}>
               <Scoreboard
                 showScoreboard={showScoreboard}
@@ -45,7 +50,7 @@ function GamePage() {
         ) : null}
 
         {game?.gameState === "lobby" && isHost ? <QrCode /> : null}
-        {game?.gameState !== "lobby" ? (
+        {game?.gameState === "play" || game?.gameState === "draw" ? (
           <Suspense fallback={null}>
             <Gui />
           </Suspense>

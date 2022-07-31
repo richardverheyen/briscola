@@ -22,6 +22,7 @@ function GameHooks() {
   let { playCardAnimationRunning } = useContext(AnimationState);
   const { auth } = useContext(Auth);
   let navigate = useNavigate();
+  const [sprite, setSprite] = useState(window.localStorage.getItem("sprite") || "napoletane");
   const [isHost, setIsHost] = useState(false);
   const [isTurn, setIsTurn] = useState(false);
   const [enemyId, setEnemyId] = useState(false);
@@ -34,6 +35,11 @@ function GameHooks() {
 
   // TODO: if you quit the game and then go back to the game url, you can't use the quitGame button anymore or view the game
   const quitGame = () => setGameSnapshot(undefined);
+
+  function updateSprite(str) {
+    window.localStorage.setItem("sprite", str);
+    setSprite(str);
+  }
 
   useEffect(() => {
     if (id) {
@@ -50,8 +56,9 @@ function GameHooks() {
     }
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
+      const isRematching = game?.rematchId === id;
 
-      if (!game && auth.uid !== gameData.host) {
+      if (!game && !gameData.creator === auth.uid || isRematching && !gameData.creator === auth.uid) {
         // it's a new game for this session/device
         gameInteract({ id, func: "joinGame" })
           .then((res) => {
@@ -62,7 +69,7 @@ function GameHooks() {
           });
       }
 
-      setGame(gameData);
+      setGame(gameData);  
 
       const newIsHost = gameData.host === auth.uid;
       const newIsTurn = gameData.currentPlayersTurn === auth.uid;
@@ -91,6 +98,8 @@ function GameHooks() {
     enemyId,
     enemyName,
     quitGame,
+    updateSprite,
+    sprite
   };
 }
 

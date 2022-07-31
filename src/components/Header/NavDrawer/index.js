@@ -1,14 +1,16 @@
 import "./style.scss";
+import github from "./github.png";
 import { useContext } from "react";
 import { Auth, Game } from "contexts";
 import { Link } from "react-router-dom";
+import * as serviceWorkerRegistration from 'serviceWorkerRegistration';
+import SpriteSelector from "./SpriteSelector";
 
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import * as serviceWorkerRegistration from 'serviceWorkerRegistration';
-import github from "./github.png";
+
 
 export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
   const { auth, setOpenUsernameModal } = useContext(Auth);
@@ -40,6 +42,8 @@ export default function TemporaryDrawer({ navOpen, toggleDrawer }) {
               Quit Game
             </Button>
           )}
+
+          <SpriteSelector />
 
           <Button variant="text" onClick={() => setOpenUsernameModal(true)}>
             Update your name

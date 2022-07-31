@@ -16,7 +16,11 @@ export default function HeldChart({ game, auth }) {
       let yOffset = Math.round(d % 2) * 10;
 
       let trickWhereCardWasDrawn = Math.floor(d / 2) - 3; // -3 ... 16;?
-      startY = trickWhereCardWasDrawn * 60;
+      if (d < 6) {
+        startY = trickWhereCardWasDrawn * 25 - 45;
+      } else {
+        startY = trickWhereCardWasDrawn * 60;
+      }
 
       let trickWhereCardWasPlayed = won.findIndex((w) =>
         w.cards.includes(card)
@@ -64,11 +68,11 @@ export default function HeldChart({ game, auth }) {
   return (
     <svg
       id="HeldChart"
-      viewBox="-140 -190 280 1330"
+      viewBox="-140 -130 280 1270"
       xmlns="http://www.w3.org/2000/svg"
     >
       {drawnToPaths().map((path, i) => (
-        <>
+        <g key={i}>
           <text className="start" x={path.textX} y={path.startTextY} textAnchor="middle">
             {cardToName(path.card)}
           </text>
@@ -76,7 +80,7 @@ export default function HeldChart({ game, auth }) {
             {cardToName(path.card)}
           </text>
           <path
-            key={i}
+            
             stroke="black"
             fill="none"
             strokeWidth="1.2"
@@ -84,10 +88,10 @@ export default function HeldChart({ game, auth }) {
             strokeLinejoin="round"
             d={path.d}
           />
-        </>
+        </g>
       ))}
       {[...Array(20)].map((n, i) => (
-        <text x="0" y={i * 60} textAnchor="middle">
+        <text key={i} x="0" y={i * 60} textAnchor="middle">
           {i + 1}
         </text>
       ))}

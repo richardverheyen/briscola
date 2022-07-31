@@ -45,13 +45,26 @@ exports.gameInteract = functions
   });
 
 async function createGame(data, context) {
-  const hostUserRecord = await admin.auth().getUser(context.auth.uid);
+  const creatorUserRecord = await admin.auth().getUser(context.auth.uid);
 
-  const { id } = await admin.firestore().collection("games").add({
-    host: context.auth.uid,
-    hostDisplayName: hostUserRecord.displayName || "host",
-    gameState: "lobby",
-  });
+  const { id } = await admin
+    .firestore()
+    .collection("games")
+    .add({
+      creator: context.auth.uid,
+      creatorDisplayName: creatorUserRecord.displayName || "",
+      creatorIsDealer: data.isDealer || false,
+      gameState: "lobby",
+    });
+
+  if (data.previousGameId) {
+    await admin.firestore().collection("games").doc(data.previousGameId).set(
+      {
+        rematchId: id,
+      },
+      { merge: true }
+    );
+  }
 
   return {
     id,
@@ -60,80 +73,93 @@ async function createGame(data, context) {
 
 async function joinGame(data, context) {
   let gameRef = admin.firestore().collection("games").doc(data.id);
-    let privateRef = gameRef.collection("private").doc("data");
-    const [gameSnapshot, oppoUserRecord] = await Promise.all([
-      gameRef.get(),
-      admin.auth().getUser(context.auth.uid),
-    ]);
-    let game = gameSnapshot.data();
-    game.oppoDisplayName = oppoUserRecord.displayName || "Opponent";
+  let privateRef = gameRef.collection("private").doc("data");
+  const [gameSnapshot, oppoUserRecord] = await Promise.all([
+    gameRef.get(),
+    admin.auth().getUser(context.auth.uid),
+  ]);
+  let game = gameSnapshot.data();
 
-    if (game.gameState !== "lobby") {
-      return;
-    }
+  if (game.gameState !== "lobby") {
+    return;
+  }
 
-    const oppoId = context.auth.uid;
-    const hostId = game.host;
+  let hostId, oppoId, hostDisplayName, oppoDisplayName;
 
-    let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
-    let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
-    let hands = {
-      [hostId]: [],
-      [oppoId]: [],
-    };
-    let lastCard;
-    let trumps;
-    let private = {
-      originalDeck,
-      deck,
-      drawn: [],
-      won: [],
-    };
+  if (game.creatorIsDealer) {
+    hostId = context.auth.uid;
+    oppoId = game.creator;
+    hostDisplayName = oppoUserRecord.displayName || "";
+    oppoDisplayName = game.creatorDisplayName;
+  } else {
+    hostId = game.creator;
+    oppoId = context.auth.uid;
+    hostDisplayName = game.creatorDisplayName;
+    oppoDisplayName = oppoUserRecord.displayName || "";
+  }
 
-    function dealCard(playerId) {
-      let card = deck.shift();
-      hands[playerId].push(card);
-      private.drawn.push({
-        player: playerId,
-        card,
-      });
-    }
+  let originalDeck = [...Array(40).keys()].sort(() => Math.random() - 0.5);
+  let deck = JSON.parse(JSON.stringify(originalDeck)); // set deck as a new assignment of originalDeck
+  let hands = {
+    [hostId]: [],
+    [oppoId]: [],
+  };
+  let lastCard;
+  let trumps;
+  let private = {
+    originalDeck,
+    deck,
+    drawn: [],
+    won: [],
+  };
 
-    function assignTrumps() {
-      let topCard = deck[0];
-      lastCard = topCard;
-      trumps = cardToSuit(topCard);
-
-      deck.push(deck.shift()); // move the topcard to the end of the deck array so it becomes the lastCard
-    }
-
-    dealCard(hostId);
-    dealCard(oppoId);
-    dealCard(hostId);
-    dealCard(oppoId);
-    dealCard(hostId);
-    dealCard(oppoId);
-    assignTrumps();
-
-    let batch = admin.firestore().batch();
-
-    let hostHandRef = admin.firestore().collection("hands").doc(hostId);
-    let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
-
-    batch.set(privateRef, private);
-    batch.set(hostHandRef, { cards: hands[hostId], gameId: data.id });
-    batch.set(oppoHandRef, { cards: hands[oppoId], gameId: data.id });
-    batch.update(gameRef, {
-      oppo: oppoId,
-      currentPlayersTurn: oppoId,
-      gameState: "play",
-      lastCard,
-      deckHeight: deck.length,
-      trick: [],
-      trumps,
+  function dealCard(playerId) {
+    let card = deck.shift();
+    hands[playerId].push(card);
+    private.drawn.push({
+      player: playerId,
+      card,
     });
+  }
 
-    batch.commit();
+  function assignTrumps() {
+    let topCard = deck[0];
+    lastCard = topCard;
+    trumps = cardToSuit(topCard);
+
+    deck.push(deck.shift()); // move the topcard to the end of the deck array so it becomes the lastCard
+  }
+
+  dealCard(hostId);
+  dealCard(oppoId);
+  dealCard(hostId);
+  dealCard(oppoId);
+  dealCard(hostId);
+  dealCard(oppoId);
+  assignTrumps();
+
+  let batch = admin.firestore().batch();
+
+  let hostHandRef = admin.firestore().collection("hands").doc(hostId);
+  let oppoHandRef = admin.firestore().collection("hands").doc(oppoId);
+
+  batch.set(privateRef, private);
+  batch.set(hostHandRef, { cards: hands[hostId], gameId: data.id });
+  batch.set(oppoHandRef, { cards: hands[oppoId], gameId: data.id });
+  batch.update(gameRef, {
+    host: hostId,
+    oppo: oppoId,
+    hostDisplayName,
+    oppoDisplayName,
+    currentPlayersTurn: oppoId,
+    gameState: "play",
+    lastCard,
+    deckHeight: deck.length,
+    trick: [],
+    trumps,
+  });
+
+  batch.commit();
 }
 
 async function playCard(data, context) {
@@ -182,129 +208,129 @@ async function playCard(data, context) {
 }
 
 async function drawCard(data, context) {
-    const { gameId } = data;
-    const userId = context.auth.uid;
+  const { gameId } = data;
+  const userId = context.auth.uid;
 
-    let gameRef = admin.firestore().collection("games").doc(gameId);
-    let privateRef = gameRef.collection("private").doc("data");
-    let egoHandRef = admin.firestore().collection("hands").doc(userId);
-    const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
-      gameRef.get(),
-      privateRef.get(),
-      egoHandRef.get(),
-    ]);
-    let game = Object.assign({}, gameSnapshot.data());
-    let private = Object.assign({}, privateSnapshot.data());
-    let egoHand = Object.assign({}, handSnapshot.data());
-    const otherPlayer = game.host === userId ? game.oppo : game.host;
+  let gameRef = admin.firestore().collection("games").doc(gameId);
+  let privateRef = gameRef.collection("private").doc("data");
+  let egoHandRef = admin.firestore().collection("hands").doc(userId);
+  const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
+    gameRef.get(),
+    privateRef.get(),
+    egoHandRef.get(),
+  ]);
+  let game = Object.assign({}, gameSnapshot.data());
+  let private = Object.assign({}, privateSnapshot.data());
+  let egoHand = Object.assign({}, handSnapshot.data());
+  const otherPlayer = game.host === userId ? game.oppo : game.host;
 
-    drawCardValidations(game, egoHand, private, userId);
+  drawCardValidations(game, egoHand, private, userId);
 
-    let otherPlayerHandRef = admin
-      .firestore()
-      .collection("hands")
-      .doc(otherPlayer);
-    const otherPlayerHandSnapshot = await otherPlayerHandRef.get();
-    let otherPlayerHand = Object.assign({}, otherPlayerHandSnapshot.data());
+  let otherPlayerHandRef = admin
+    .firestore()
+    .collection("hands")
+    .doc(otherPlayer);
+  const otherPlayerHandSnapshot = await otherPlayerHandRef.get();
+  let otherPlayerHand = Object.assign({}, otherPlayerHandSnapshot.data());
 
-    // actions
-    // draw card for ego
-    const drawnCard1 = private.deck.shift();
-    egoHand.cards.push(drawnCard1);
-    private.drawn.push({
-      player: userId,
-      card: drawnCard1,
-    });
+  // actions
+  // draw card for ego
+  const drawnCard1 = private.deck.shift();
+  egoHand.cards.push(drawnCard1);
+  private.drawn.push({
+    player: userId,
+    card: drawnCard1,
+  });
 
-    // draw card for other player
-    const drawnCard2 = private.deck.shift();
-    otherPlayerHand.cards.push(drawnCard2);
-    private.drawn.push({
-      player: otherPlayer,
-      card: drawnCard2,
-    });
+  // draw card for other player
+  const drawnCard2 = private.deck.shift();
+  otherPlayerHand.cards.push(drawnCard2);
+  private.drawn.push({
+    player: otherPlayer,
+    card: drawnCard2,
+  });
 
-    // give trick cards to the ego player
-    private.won.push({
-      player: userId,
-      cards: [game.trick.shift(), game.trick.shift()],
-    });
-    game.gameState = "play";
-    game.deckHeight = private.deck.length;
+  // give trick cards to the ego player
+  private.won.push({
+    player: userId,
+    cards: [game.trick.shift(), game.trick.shift()],
+  });
+  game.gameState = "play";
+  game.deckHeight = private.deck.length;
 
-    let batch = admin.firestore().batch();
-    batch.update(gameRef, game);
-    batch.update(privateRef, private);
-    batch.update(egoHandRef, egoHand);
-    batch.update(otherPlayerHandRef, otherPlayerHand);
+  let batch = admin.firestore().batch();
+  batch.update(gameRef, game);
+  batch.update(privateRef, private);
+  batch.update(egoHandRef, egoHand);
+  batch.update(otherPlayerHandRef, otherPlayerHand);
 
-    batch.commit();
-};
+  batch.commit();
+}
 
 async function takeCards(data, context) {
-    const { gameId } = data;
-    const userId = context.auth.uid;
+  const { gameId } = data;
+  const userId = context.auth.uid;
 
-    let gameRef = admin.firestore().collection("games").doc(gameId);
-    let privateRef = gameRef.collection("private").doc("data");
-    let handRef = admin.firestore().collection("hands").doc(userId);
-    const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
-      gameRef.get(),
-      privateRef.get(),
-      handRef.get(),
-    ]);
-    let game = Object.assign({}, gameSnapshot.data());
-    let private = Object.assign({}, privateSnapshot.data());
-    let hand = Object.assign({}, handSnapshot.data());
+  let gameRef = admin.firestore().collection("games").doc(gameId);
+  let privateRef = gameRef.collection("private").doc("data");
+  let handRef = admin.firestore().collection("hands").doc(userId);
+  const [gameSnapshot, privateSnapshot, handSnapshot] = await Promise.all([
+    gameRef.get(),
+    privateRef.get(),
+    handRef.get(),
+  ]);
+  let game = Object.assign({}, gameSnapshot.data());
+  let private = Object.assign({}, privateSnapshot.data());
+  let hand = Object.assign({}, handSnapshot.data());
 
-    takeCardsValidations(game, hand, userId);
+  takeCardsValidations(game, hand, userId);
 
-    // actions
-    game.gameState = "play";
-    private.won.push({
-      player: userId,
-      cards: [game.trick.shift(), game.trick.shift()],
-    });
+  // actions
+  game.gameState = "play";
+  private.won.push({
+    player: userId,
+    cards: [game.trick.shift(), game.trick.shift()],
+  });
 
-    if (hand.cards.length === 0 && private.deck.length === 0) {
-      game.gameState = "over";
+  if (hand.cards.length === 0 && private.deck.length === 0) {
+    game.gameState = "over";
 
-      // make the won and drawn lists available to the scoreboard
-      game.won = private.won;
-      game.drawn = private.drawn;
-    }
+    // make the won and drawn lists available to the scoreboard
+    game.won = private.won;
+    game.drawn = private.drawn;
+  }
 
-    let batch = admin.firestore().batch();
-    batch.update(gameRef, game);
-    batch.update(privateRef, private);
-    batch.update(handRef, hand);
+  let batch = admin.firestore().batch();
+  batch.update(gameRef, game);
+  batch.update(privateRef, private);
+  batch.update(handRef, hand);
 
-    batch.commit();
-};
+  batch.commit();
+}
 
 async function updateUsernameInGame(data, context) {
-    let gameRef = admin.firestore().collection("games").doc(data.id);
-    const [gameSnapshot, egoUserRecord] = await Promise.all([
-      gameRef.get(),
-      admin.auth().getUser(context.auth.uid),
-    ]);
-    let game = gameSnapshot.data();
-    let egoUserDisplayName = egoUserRecord.displayName;
+  let gameRef = admin.firestore().collection("games").doc(data.id);
+  const [gameSnapshot, egoUserRecord] = await Promise.all([
+    gameRef.get(),
+    admin.auth().getUser(context.auth.uid),
+  ]);
+  let game = gameSnapshot.data();
+  let egoUserDisplayName = egoUserRecord.displayName;
 
-    const egoUserIsHost = game.host === context.auth.uid;
-    if (egoUserIsHost) {
-      game.hostDisplayName = egoUserDisplayName;
-    }
+  const egoUserIsHost = game.host === context.auth.uid;
+  if (egoUserIsHost) {
+    game.hostDisplayName = egoUserDisplayName;
+  }
 
-    const egoUserIsOppo = game.oppo === context.auth.uid;
-    if (egoUserIsOppo) {
-      game.oppoDisplayName = egoUserDisplayName;
-    }
+  const egoUserIsOppo = game.oppo === context.auth.uid;
+  if (egoUserIsOppo) {
+    game.oppoDisplayName = egoUserDisplayName;
+  }
 
-    let batch = admin.firestore().batch();
-    batch.update(gameRef, game);
-    batch.commit();
-};
+  let batch = admin.firestore().batch();
+  batch.update(gameRef, game);
+  batch.commit();
+}
 
 function playCardValidations(game, hand, card, userId) {
   if (game.gameState !== "play") {
