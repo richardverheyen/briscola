@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 
 import { Game } from "contexts";
 import QrCode from "./QrCode";
+import RematchButton from "./RematchButton";
 
 const Scoreboard = lazy(() => import("./Scoreboard"));
 const Gui = lazy(() => import("./Gui"));
@@ -31,10 +32,14 @@ function GamePage() {
             <Button
               className="scoreboard-button"
               variant="outlined"
+              size="large"
               onClick={() => setShowScoreboard(true)}
             >
               Show Scoreboard
             </Button>
+
+            <RematchButton />
+
             <Suspense fallback={null}>
               <Scoreboard
                 showScoreboard={showScoreboard}
@@ -45,7 +50,7 @@ function GamePage() {
         ) : null}
 
         {game?.gameState === "lobby" && isHost ? <QrCode /> : null}
-        {game?.gameState !== "lobby" ? (
+        {game?.gameState === "play" || game?.gameState === "draw" ? (
           <Suspense fallback={null}>
             <Gui />
           </Suspense>

@@ -56,8 +56,10 @@ function GameHooks() {
     }
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
+      const isRematching = game?.rematchId === id;
+      const newIsHost = gameData.creator === auth.uid;
 
-      if (!game && auth.uid !== gameData.host) {
+      if (!game && !newIsHost || isRematching && !newIsHost) {
         // it's a new game for this session/device
         gameInteract({ id, func: "joinGame" })
           .then((res) => {
@@ -68,9 +70,8 @@ function GameHooks() {
           });
       }
 
-      setGame(gameData);
+      setGame(gameData);  
 
-      const newIsHost = gameData.host === auth.uid;
       const newIsTurn = gameData.currentPlayersTurn === auth.uid;
       const newEnemyId = newIsHost ? gameData.oppo : gameData.host;
       const newEnemyName = newIsHost ? gameData.oppoDisplayName || "" : gameData.hostDisplayName || "";
