@@ -1,8 +1,12 @@
 <p style="display: flex;">
-  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example1.PNG?raw=true" width="180">
-  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example2.PNG?raw=true" width="180">
-  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example3.PNG?raw=true" width="180">
-  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example4.PNG?raw=true" width="180">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example1-qr-codes.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example2-alternative-graphics.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example3-gameplay.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example4-gameplay2.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example5-scoreboard.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example6-scoreboard2.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example7-cards-held.webp?raw=true" width="120">
+  <img src="https://github.com/richardverheyen/briscola/blob/master/public/images/example8-cards-held2.webp?raw=true" width="120">
 </p>
 
 # Briscola by Richard Verheyen
