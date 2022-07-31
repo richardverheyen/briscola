@@ -92,8 +92,8 @@ async function joinGame(data, context) {
     hostDisplayName = oppoUserRecord.displayName || "";
     oppoDisplayName = game.creatorDisplayName;
   } else {
-    oppoId = context.auth.uid;
     hostId = game.creator;
+    oppoId = context.auth.uid;
     hostDisplayName = game.creatorDisplayName;
     oppoDisplayName = oppoUserRecord.displayName || "";
   }
