@@ -12,7 +12,7 @@ const Gui = lazy(() => import("./Gui"));
 
 function GamePage() {
   let { id } = useParams();
-  let { game, setId, isHost, sprite } = useContext(Game);
+  let { game, setId, isCreator, sprite } = useContext(Game);
   let [showScoreboard, setShowScoreboard] = useState(true);
 
   // sets the Game context with the id from the URL (for both host and oppo)
@@ -49,7 +49,7 @@ function GamePage() {
           </>
         ) : null}
 
-        {game?.gameState === "lobby" && isHost ? <QrCode /> : null}
+        {game?.gameState === "lobby" && isCreator ? <QrCode /> : null}
         {game?.gameState === "play" || game?.gameState === "draw" ? (
           <Suspense fallback={null}>
             <Gui />

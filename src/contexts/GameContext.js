@@ -12,6 +12,7 @@ export const Game = createContext({
   game: undefined,
   setId: () => {},
   isHost: undefined,
+  isCreator: undefined,
   isTurn: undefined,
   enemyId: undefined,
   enemyName: undefined,
@@ -24,6 +25,7 @@ function GameHooks() {
   let navigate = useNavigate();
   const [sprite, setSprite] = useState(window.localStorage.getItem("sprite") || "napoletane");
   const [isHost, setIsHost] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
   const [isTurn, setIsTurn] = useState(false);
   const [enemyId, setEnemyId] = useState(false);
   const [enemyName, setEnemyName] = useState(false);
@@ -57,8 +59,9 @@ function GameHooks() {
     if (gameSnapshot) {
       const gameData = gameSnapshot.data();
       const isRematching = game?.rematchId === id;
+      const newIsCreator = gameData.creator === auth.uid;
 
-      if (!game && !gameData.creator === auth.uid || isRematching && !gameData.creator === auth.uid) {
+      if (!game && !newIsCreator || isRematching && !newIsCreator) {
         // it's a new game for this session/device
         gameInteract({ id, func: "joinGame" })
           .then((res) => {
@@ -77,6 +80,7 @@ function GameHooks() {
       const newEnemyName = newIsHost ? gameData.oppoDisplayName || "" : gameData.hostDisplayName || "";
 
       setIsHost(newIsHost);
+      setIsCreator(newIsCreator);
       setIsTurn(newIsTurn);
       setEnemyId(newEnemyId);
       setEnemyName(newEnemyName);
@@ -84,6 +88,7 @@ function GameHooks() {
     } else if (!gameSnapshot && id) {
       setGame(undefined);
       setIsHost(undefined);
+      setIsCreator(undefined);
       navigate("/");
       document.title = "Briscola";
     }
@@ -94,6 +99,7 @@ function GameHooks() {
     setId,
     game,
     isHost,
+    isCreator,
     isTurn,
     enemyId,
     enemyName,
